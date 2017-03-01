@@ -1,0 +1,17 @@
+[Identification]
+ SERIAL_NO	= BEL119
+ TITLE		= AOSLOVI 3.0u Ag coating mirror
+;DM model line - 3.0um
+;DM description/coating/angle - NONE/Ag Coating/6deg
+;Comments - Fully functional, used in AOSLOVI
+;Wolf's ALPAO mirror
+
+[Constants]
+;Custom calibration parameters
+;COEFF_A	= -0.000030849
+;COEFF_B	= 0.000843727
+;COEFF_C	= 1.1897
+;COEFF_D	= 0.0
+
+;Custom Max deflection in microns
+MAX_DEFLECTION	= 0.2
