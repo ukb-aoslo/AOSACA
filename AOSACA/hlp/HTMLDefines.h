@@ -19,6 +19,8 @@
 #define HID_HELP_HELPCONTENTS                   0x18011
 #define HID_HELP_ABOUTAOSACA                    0x18012
 #define HID_TOOLS_ALIGNDM                       0x18013
+#define HID_TOOLS_SAVEMIRRORSHAPE               0x18014
+#define HID_TOOLS_SAVEVOLTAGES                  0x18015
  
 // Prompts (IDP_*) 
 #define HIDP_SOCKETS_INIT_FAILED                0x30067

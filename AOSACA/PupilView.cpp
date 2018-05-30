@@ -5,7 +5,11 @@
 #include "AOSACA.h"
 #include "PupilView.h"
 #include "afxdialogex.h"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
 #include <Vfw.h>
+#include <vector>
+
 
 extern AOSACAParams*g_AOSACAParams;
 // CPupilView dialog
@@ -20,6 +24,7 @@ CPupilView::CPupilView(CWnd* pParent /*=NULL*/)
 
 CPupilView::~CPupilView()
 {
+	capSetCallbackOnFrame(hPupilCamWindow, NULL);
 	OnClose();
 }
 
@@ -48,6 +53,7 @@ void CPupilView::OnClose()
 
 bool CPupilView::OnEditPupilcamerasettings()
 {
+	
 	// TODO: Add your command handler code here
 	CAPDRIVERCAPS CapDriverCaps = { }; 
 	capDriverGetCaps(hPupilCamWindow, &CapDriverCaps, sizeof(CAPDRIVERCAPS)); 
@@ -73,9 +79,32 @@ BOOL CPupilView::OnEraseBkgnd(CDC* pDC)
 //	return CDialogEx::OnEraseBkgnd(pDC);
 }
 
+
+LRESULT PASCAL FrameCallbackProc(HWND hWnd, LPVIDEOHDR lpVHdr)
+{
+	CPupilView *pParent = (CPupilView*)hWnd;
+
+	if (!hWnd)
+		return FALSE;
+	cv::Mat* input = new cv::Mat();
+	input->create(PUPIL_CAM_HEIGHT, PUPIL_CAM_WIDTH, CV_8UC3);
+	cv::Mat single(input->rows, input->cols, CV_8UC1);
+	memcpy(input->data, lpVHdr->lpData, lpVHdr->dwBytesUsed);
+	int from_to[] = {0,0};
+	cv::mixChannels(input, 1, &single, 1, from_to, 1);
+	GaussianBlur(single, single, cv::Size(9,9), 2, 2);
+	std::vector<cv::Vec3f> circles;
+	HoughCircles(single, circles, CV_HOUGH_GRADIENT, 1, single.rows / 8, 200, 100, 0, 0);
+	memcpy(lpVHdr->lpData, input->data, lpVHdr->dwBytesUsed);
+
+	return (LRESULT)TRUE;
+}
+
 BOOL CPupilView::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
+
+	return false; // RETURN AT ONCE, CODE BELOW LEAKS MEMORY
 
 	// TODO:  Add extra initialization here
 	m_bHasVideoDlg = false;
@@ -91,8 +120,9 @@ BOOL CPupilView::OnInitDialog()
 		capGetVideoFormat(hPupilCamWindow, lpbi, dwSize); 
 		lpbi->bmiHeader.biHeight = PUPIL_CAM_HEIGHT;
 		lpbi->bmiHeader.biWidth = PUPIL_CAM_WIDTH;
+		//lpbi->bmiHeader.biBitCount = 8;
 		lpbi->bmiHeader.biSizeImage = PUPIL_CAM_HEIGHT*PUPIL_CAM_WIDTH*(lpbi->bmiHeader.biBitCount/8);
-		capSetVideoFormat( hPupilCamWindow,lpbi, dwSize);
+		capSetVideoFormat(hPupilCamWindow, lpbi, dwSize);
 		CAPTUREPARMS CaptureParms;
 		capCaptureGetSetup(hPupilCamWindow, &CaptureParms, sizeof(CAPTUREPARMS));
 		CaptureParms.dwAudioBufferSize = 0;
@@ -103,9 +133,16 @@ BOOL CPupilView::OnInitDialog()
 		m_bHasVideoDlg = CapDriverCaps.fHasDlgVideoSource?true:false;
 		capPreviewRate(hPupilCamWindow, 24);     // rate, in milliseconds
 		capPreview(hPupilCamWindow, TRUE);
+		
+		FARPROC fpFrameCallback;
+		fpFrameCallback = MakeProcInstance((FARPROC)FrameCallbackProc, hInst);
+		capSetCallbackOnFrame(hPupilCamWindow, fpFrameCallback);
 	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
+
+
 }
+
 

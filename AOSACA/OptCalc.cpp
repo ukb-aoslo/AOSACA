@@ -61,6 +61,7 @@ COptCalc::COptCalc()
 	m_bZReconReady = false;
 	m_dFFactor = 0.975;
 	m_dIntGain = 0.2;
+	m_ReferenceDefocus = 0.0;
 //modified by Jim 
 	m_Ref_PreZ345=new double[3];
 	m_Ref_PreZ345[0] =0.0;
@@ -1396,8 +1397,10 @@ void COptCalc::Compute_Openloop_Voltages(double induced_defocus)
 	for (i=0; i<(size<<1);i++)
 		tempPhi[i]=1.0 * (induced_defocus - m_ReferenceDefocus) * g_centroids->m_dZM[i*(MAX_TERM_NUMBER+1)+4];
 
-	VD_mulC(tempPhi, tempPhi, (size<<1), (2/(g_AOSACAParams->PUPIL_FIT_SIZE_MICRONS)));
-
+	VD_mulC(tempPhi, tempPhi, (size << 1), (2. / (g_AOSACAParams->PUPIL_FIT_SIZE_MICRONS)));
+	MD_mulV(m_CurVoltages, &(g_centroids->m_dReconM_fullpupil), tempPhi, (g_AOSACAParams->NUMACTS), size << 1);
+	VD_addV(m_CurVoltages, m_PrevVoltages1, m_CurVoltages, (g_AOSACAParams->NUMACTS));
+	VD_limit(m_CurVoltages, m_CurVoltages, (g_AOSACAParams->NUMACTS), -0.8, 0.8);
 	MD_mulV(m_CurVoltages , &(g_centroids->m_dReconM), tempPhi, (g_AOSACAParams->NUMACTS), size<<1 );
 	VD_limit(m_CurVoltages, m_CurVoltages, (g_AOSACAParams->NUMACTS), -0.15, 0.15);
 	VD_addV(m_CurVoltages, m_PrevVoltages1, m_CurVoltages, (g_AOSACAParams->NUMACTS));
@@ -1607,34 +1610,27 @@ void COptCalc::get_DefCylAxis(double *def, double *cyl, double *axis)
 	*(axis) = m_axis;
 }
 
-void COptCalc::Induce_Abberations(double values[MAX_TERM_NUMBER+1], double defocus, double fit_size)
+void COptCalc::Induce_Abberations(double values[MAX_TERM_NUMBER + 1], double defocus, double fit_size)
 {
-	memset(g_centroids->m_dZAbber, 0, (MAX_TERM_NUMBER+1)*sizeof(double));
+	memset(g_centroids->m_dZAbber, 0, (MAX_TERM_NUMBER + 1) * sizeof(double));
 	if (values != NULL) //ignore defocus argument and remember the Z terms from CLAbberations dialog are in microns
-		memcpy(g_centroids->m_dZAbber, values, (MAX_TERM_NUMBER+1)*sizeof(double));
+		memcpy(g_centroids->m_dZAbber, values, (MAX_TERM_NUMBER + 1) * sizeof(double));
 	else //ignore values argument and process defocus only
-		g_centroids->m_dZAbber[4] = Diopters_to_Microns(defocus, fit_size);
-	if (m_CloopFlag)
-	{
-		g_centroids->Initialize_Phi();
-	}
-	else
-	{
-		Compute_Openloop_Voltages(g_centroids->m_dZAbber[4]);
-		Send_Voltages(COMP_BIT);
-	}
-/*	m_CloopFlag?
+		g_centroids->m_dZAbber[4] = Diopters_to_Microns(-defocus, fit_size);
+	m_CloopFlag ?
+
 		g_centroids->Initialize_Phi()
-		:Compute_Openloop_Voltages(g_centroids->m_dZAbber[4]),
+		: Compute_Openloop_Voltages(g_centroids->m_dZAbber[4]),
 		Send_Voltages(COMP_BIT);
-	*/
+
 	m_ReferenceDefocus = g_centroids->m_dZAbber[4];
+
 }
 
 double COptCalc::Diopters_to_Microns(double def_diopters, double fit_size)
 {
 	// Converting to microns (standard equation: D = (-4*srqt(3)*Z4)/pow(radius_in_mm,2)
-	return ((-def_diopters*pow((fit_size/(2.*1000.)),2))/(4.*sqrt(3.))); //06/29/2010
+	return ((def_diopters*pow((fit_size / (2.*1000.)), 2)) / (4.*sqrt(3.))); //06/29/2010
 }
 
 void COptCalc::set_CloopFlag(bool val)
@@ -1693,18 +1689,37 @@ void COptCalc::SetActuator(int idx, mirror_state state)
 	switch (state)
 	{
 	case MIN_BIT:
-		g_AOSACAParams->g_DMDeflections[idx] = m_dMinBit;
+		g_AOSACAParams->g_DMDeflections[idx] = m_dMinBit + g_AOSACAParams->g_DMBiasDeflections[idx];
 		break;
 	case BIAS_BIT:
 		g_AOSACAParams->g_DMDeflections[idx] = g_AOSACAParams->g_DMBiasDeflections[idx];  // modified by Jim 2015
 		break;
 	case MAX_BIT:
-		g_AOSACAParams->g_DMDeflections[idx] = m_dMaxBit;
+		g_AOSACAParams->g_DMDeflections[idx] = m_dMaxBit + g_AOSACAParams->g_DMBiasDeflections[idx];
 		break;
 	}
 	Send_Voltages(COMP_BIT);
 	return;
 }
+
+BOOL COptCalc::SaveVoltages(CStringA filename)
+{
+	FILE* outfile;
+	BOOL result = true;
+	errno_t err;
+	err = fopen_s(&outfile, filename, "w+");
+
+	if (err == 0)
+	{
+		for (int i = 0; i < g_AOSACAParams->NUMACTS; i++)
+			fprintf(outfile, "%1.18f\n", g_AOSACAParams->g_DMDeflections[i]);
+		fclose(outfile);
+	}
+	else
+		result = false;
+	return result;
+}
+
 
 double COptCalc::get_Defocus()
 {
@@ -2165,20 +2180,24 @@ void COptCalc:: PreCorrection(double defocus, double cylinder, double axis, doub
 }
 
 
-void COptCalc:: Diopters_to_Zernike_Microns(double defocus, double cylinder, double axis, double fit_size, double *Z345)	
+void COptCalc::Diopters_to_Zernike_Microns(double defocus, double cylinder, double axis, double fit_size, double *Z345)
 {
-	double cm3, cm4, cm5, phi, Dcoeff, Acoeff;//, axis, cylinder, defocus;
-	
-	Dcoeff=defocus*( pow((m_pupil_size_zernike / (2000.*1000.)),2.))/2;
-	Acoeff=cylinder*( pow((m_pupil_size_zernike / (2000.*1000.)),2.))/2;
-	cm4=(Dcoeff+Acoeff / 2)/(2 * sqrt(3.));
+	double cm3, cm4, cm5, phi, Acoeff;
 
-	phi=axis/180* PI;
-	cm3=Acoeff*sin(2 * phi)/(2 * sqrt(6.));
-	cm5=-Acoeff*cos(2 * phi)/(2 * sqrt(6.));
-	Z345[0]=cm3*1E6;
-	Z345[1]=cm4*1E6;
-	Z345[2]=cm5*1E6;
+	if (axis == 0.)
+		axis = 180.;
+	phi = PI*(180. - axis) / 180.;
+	cm4 = ((defocus*pow((fit_size / 2000.), 2.)) / (4.*sqrt(3.))) + ((cylinder*pow((fit_size / 2000.), 2.)) / (8.*sqrt(3.)));
+	Acoeff = (cylinder*pow((fit_size / 2000.), 2.)) / 2.;
+	cm3 = -(1. / (2.*sqrt(6.)))*tan(2.*phi)*Acoeff*cos(2.*phi);
+	if (tan(2.*phi) == 0)
+		cm5 = 0.;
+	else
+		cm5 = -(Acoeff*sin(2.*phi) / (2.*sqrt(6.))) / (tan(2.*phi));
+	Z345[0] = cm3;
+	Z345[1] = cm4;
+	Z345[2] = cm5;
+
 }
 
 void COptCalc::Compute_PreCorrection_Voltages(double *Z345)
@@ -2192,12 +2211,10 @@ void COptCalc::Compute_PreCorrection_Voltages(double *Z345)
 	memset(tempPhi, 0, (size<<1)*sizeof(double)); 
 
 	for (i=0; i<(size<<1);i++)
-	{
-		tempPhi[i]= (Z345[0] ) * g_centroids->m_dZM[i*(MAX_TERM_NUMBER+1)+3]+ (Z345[1] ) * g_centroids->m_dZM[i*(MAX_TERM_NUMBER+1)+4]+(Z345[2]) * g_centroids->m_dZM[i*(MAX_TERM_NUMBER+1)+5];
-	}
+		tempPhi[i] = (Z345[0]) * g_centroids->m_dZM[i*(MAX_TERM_NUMBER + 1) + 3] + (Z345[1]) * g_centroids->m_dZM[i*(MAX_TERM_NUMBER + 1) + 4] + (Z345[2]) * g_centroids->m_dZM[i*(MAX_TERM_NUMBER + 1) + 5];
 
 	VD_mulC(tempPhi, tempPhi, (size<<1), (2/(g_AOSACAParams->PUPIL_FIT_SIZE_MICRONS)));
-	MD_mulV(m_PreCorrectionVoltages, &(g_centroids->m_dReconM_fullpupil), tempPhi, (g_AOSACAParams->NUMACTS), size<<1 );
+	MD_mulV(m_PreCorrectionVoltages, &(g_centroids->m_dReconM_fullpupil), tempPhi, (g_AOSACAParams->NUMACTS), size << 1); //m_dReconM_fullpupil
 
 	VD_limit(m_PreCorrectionVoltages, m_PreCorrectionVoltages, (g_AOSACAParams->NUMACTS), -0.8, 0.8);
 }

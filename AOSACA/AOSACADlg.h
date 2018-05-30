@@ -7,8 +7,8 @@
 #include "VecALL.h"
 #include "MatALL.h"
 
-#define MAIN_WINDOW_WIDTH	1280
-#define MAIN_WINDOW_HEIGHT	995
+#define MAIN_WINDOW_WIDTH	1290
+#define MAIN_WINDOW_HEIGHT	970
 
 enum mouse_mode_enum {MOUSE_NORMAL=0,	// 0 for doing nothing
 	MOUSE_SELECT_CENTER=1,				// 1 for user selecting center,
@@ -47,6 +47,7 @@ public:
 	void	ResetZeroDMMenu();
 
 private:
+
 	mouse_mode_enum m_eMouse_mode;	
 
 	bool	LocateCentroids(void);	
@@ -91,4 +92,7 @@ public:
 	afx_msg void OnToolsAligndm();
 	afx_msg void OnEditPupilcamerasettings();
 	afx_msg void OnHelpAboutaosaca();
+	afx_msg void OnToolsSavemirrorshape();
+	virtual BOOL DestroyWindow();
+	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 };

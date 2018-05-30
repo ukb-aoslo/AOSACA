@@ -203,14 +203,14 @@ BOOL CControlPanelDlg::OnInitDialog()
 					 rect, this, IDE_CONTROL_ICANDI_RECORD_DURATION);
 
 	m_eCamExp.SetValidation(MYEDIT_INTEGER, g_AOSACAParams->EXPOSURE_MS, 15, 180, 3, -1, false);
-	m_eCamGain.SetValidation(MYEDIT_INTEGER, g_AOSACAParams->CAMGAIN_DB, 8, 30, 2, -1, false);
+	m_eCamGain.SetValidation(MYEDIT_INTEGER, g_AOSACAParams->CAMGAIN_DB, 0, 20, 2, -1, false);
 	m_eCentThreshold.SetValidation(MYEDIT_INTEGER, g_AOSACAParams->THRESHOLD, 1, 255, 3, -1, false);
 	m_eMinCent.SetValidation(MYEDIT_INTEGER, m_MinCent, 0, 0, 3, false) ;
 	m_eIntGain.SetValidation(MYEDIT_DOUBLE, m_IntGain, 0, 1, 1, 2, false);
 	m_eModestoZero.SetValidation(MYEDIT_INTEGER, m_ModestoZero, 0, 50, 2, 0, false);
 	m_ePupilSize.SetValidation(MYEDIT_DOUBLE, m_PupilSize, 4, 7.2, 1, 1, false);
-	m_ePreCorrection_Def.SetValidation(MYEDIT_DOUBLE, m_PreDefocusValue, -8, 8, 1, 2, true);
-	m_ePreCorrection_Cyl.SetValidation(MYEDIT_DOUBLE, m_PreCylinderValue, -8, 8, 1, 2, true);
+	m_ePreCorrection_Def.SetValidation(MYEDIT_DOUBLE, m_PreDefocusValue, -9, 9, 1, 2, true);
+	m_ePreCorrection_Cyl.SetValidation(MYEDIT_DOUBLE, m_PreCylinderValue, -9, 9, 1, 2, true);
 	m_ePreCorrection_Axis.SetValidation(MYEDIT_INTEGER, m_PreAxisValue, 0, 179, 3, 0, false);
 	m_eFixedDef.SetValidation(MYEDIT_DOUBLE, m_FixedDefocusValue, -2, 2, 1, 3, true);
 	m_eDefStep.SetValidation(MYEDIT_DOUBLE, m_DefocusStepSize, 0.005, 0.1, 1, 3, false);
@@ -247,7 +247,7 @@ BOOL CControlPanelDlg::OnInitDialog()
 	m_ehCPanelThreadClose = ::CreateEventA(NULL, false, false, NULL);
 	m_ehCPanelThreadClosed = ::CreateEventA(NULL, false, false, NULL);
 	Thread_Dialog_Controls = CreateThread(NULL,0,ControlPanelThread,this,0,&ThreadId_Dialog_Controls);
-	SetThreadPriority(Thread_Dialog_Controls, THREAD_PRIORITY_LOWEST);
+	SetThreadPriority(Thread_Dialog_Controls, THREAD_PRIORITY_NORMAL);
 	g_AOSACAParams->g_last_click = LIVE;
 
 	UpdateData(false);
@@ -310,7 +310,7 @@ void CControlPanelDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar
 			break;
 		case IDS_CONTROL_CLOOPPARAMS_PUPILSIZE:
 			m_PupilSize = m_ePupilSize.UpdateValue(direction, 0.1);
-			m_MinCent = g_centroids->Update_bUse_centroid(m_PupilSize/2.);
+			m_MinCent = g_centroids->Update_bUse_centroid(m_PupilSize); //
 			SetDlgItemInt(IDE_CONTROL_CLOOPPARAMS_MINCENT, m_MinCent, false);
 			g_centroids->set_MinCentroids(m_MinCent);
 			break;
@@ -728,7 +728,7 @@ void CControlPanelDlg::Get_SnapShot()
 	}
 	else
 		SetEvent(g_AOSACAParams->g_ehCamSnap);
-	::WaitForSingleObject(g_AOSACAParams->g_ehCamNewFrame, g_AOSACAParams->EXPOSURE_MS<<1);
+	WaitForSingleObject(g_AOSACAParams->g_ehCamNewFrame, g_AOSACAParams->EXPOSURE_MS<<1);
 //	g_AOSACAParams->g_Logfile<<LPCTSTR(g_AOSACAParams->GetTimeStamp())<<"\n";
 	ResetEvent(g_AOSACAParams->g_ehCamNewFrame);
 	g_AOSACAParams->g_last_click = SNAP;
@@ -937,6 +937,7 @@ BOOL CControlPanelDlg::PreTranslateMessage(MSG* pMsg)
 					m_eFixedDef.CheckValidity();
 					GetDlgItemText(IDE_CONTROL_DEFOCUS_FIXEDDEF,text);
 					m_FixedDefocusValue = _ttof(text);
+					send_DM_update_Defocus(m_FixedDefocusValue);
 				}
 				else if (pWnd == &m_eDefStep)
 				{

@@ -32,7 +32,7 @@ BOOL CThreadClass::InitInstance(CAOSACADlg *parent)
 	m_pParent = parent;
 	m_ehThreadExit = CreateEvent(NULL, FALSE, FALSE, _T("THREAD_EXIT_EVENT"));
 	m_ehThreadClose = CreateEvent(NULL, FALSE, FALSE, _T("CLOOP_THREAD_CLOSE_EVENT"));
-	AfxBeginThread(Run_DMAOLoop, this, THREAD_PRIORITY_HIGHEST,0,0,NULL);
+	AfxBeginThread(Run_DMAOLoop, this, THREAD_PRIORITY_NORMAL,0,0,NULL);
 	return TRUE;
 }
 
@@ -46,7 +46,7 @@ int CThreadClass::ExitInstance()
 		g_AOSACAParams->g_bPokeMatGeneration = g_AOSACAParams->g_bCloseLoopThread = false;
 	}
 	SetEvent(m_ehThreadClose);
-	::WaitForSingleObject(m_ehThreadExit, 1000);
+	::WaitForSingleObject(m_ehThreadExit, 100);
 	CloseHandle(m_ehThreadExit);
 	CloseHandle(m_ehThreadClose);
 	SetEvent(g_AOSACAParams->g_ehCLoopShutdown);

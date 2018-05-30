@@ -79,6 +79,8 @@
     <LibraryPath>
     </LibraryPath>
     <TargetName>$(ProjectName)D</TargetName>
+    <IncludePath>$(WindowsSDK_IncludePath);$(VC_IncludePath);</IncludePath>
+    <ExcludePath>$(WindowsSDK_IncludePath);$(VC_IncludePath);$(MSBuild_ExecutablePath);$(VC_LibraryPath_x64);</ExcludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -110,6 +112,10 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -117,15 +123,15 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\utils\freeimage;.\utils\pointgrey\include;.\utils\optivec\include;.\utils\alpao\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\utils\freeimage;C:\Program Files\Optivec\include;C:\Program Files\Alpao\SDK\include;C:\Program Files\Baumer\Baumer GAPI SDK\Components\Dev\C++\Inc;C:\Program Files\opencv\build\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>ovvc64_9.lib;ovvc14x64mdd.lib;FlyCapture2d_v100.lib;ASDK.lib;Winmm.lib;vfw32.lib</AdditionalDependencies>
+      <AdditionalDependencies>ovvc64_8m.lib;ovvc14x64mdd.lib;ASDK.lib;Winmm.lib;vfw32.lib;bgapi2_genicam.lib;opencv_world320d.lib;opengl32.lib;glu32.lib</AdditionalDependencies>
       <DelayLoadDLLs>
       </DelayLoadDLLs>
-      <AdditionalLibraryDirectories>$(VC_LibraryPath_x64);.\utils\pointgrey\lib64;.\utils\optivec\lib\x64;.\utils\alpao\lib\x64;$(WindowsSDK_LibraryPath_x64)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(VC_LibraryPath_x64);C:\Program Files\Optivec\lib\x64;C:\Program Files\Alpao\SDK\lib\x64;$(WindowsSDK_LibraryPath_x64);C:\Program Files\Baumer\Baumer GAPI SDK\Components\Dev\C++\Lib\x64;C:\Program Files\opencv\build\x64\vc14\lib</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -136,6 +142,12 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>copy /y "%GENICAM_GENTL64_PATH%\bgapi2_genicam.dll" "$(TargetDir)"
+copy /y "%GENICAM_GENTL64_PATH%\MathParser.dll" "$(TargetDir)"
+copy /y "C:\Program Files\MATLAB\R2016a\bin\win64\vcomp100.dll" "$(TargetDir)"
+copy /y "C:\Program Files\opencv\build\x64\vc14\bin\opencv_world320d.dll" "$(TargetDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -171,7 +183,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\utils\freeimage;.\utils\pointgrey\include;.\utils\optivec\include;.\utils\alpao\include;.\utils\alpao</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>utils\freeimage;C:\Program Files\Optivec\include;C:\Program Files\Alpao\SDK\include;C:\Program Files\Baumer\Baumer GAPI SDK\Components\Dev\C++\Inc;C:\Program Files\opencv\build\include</AdditionalIncludeDirectories>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
     </ClCompile>
     <Link>
@@ -179,9 +191,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>ovvc64_8m.lib;ovvcx64mdr.lib;FlyCapture2d_v100.lib;ASDK.lib;Winmm.lib;vfw32.lib</AdditionalDependencies>
+      <AdditionalDependencies>ovvc64_8m.lib;ovvc14x64mdr.lib;ASDK.lib;Winmm.lib;vfw32.lib;bgapi2_genicam.lib;opencv_world320.lib;opengl32.lib;glu32.lib</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>.\utils\optivec\lib\x64;.\utils\pointgrey\lib64;.\utils\alpao\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(VC_LibraryPath_x64);%CVB%Lib\C;C:\Program Files\Optivec\lib\x64;C:\Program Files\Alpao\SDK\lib\x64;C:\Program Files\Baumer\Baumer GAPI SDK\Components\Dev\C++\Lib\x64;C:\Program Files\opencv\build\x64\vc14\lib;$(WindowsSDK_LibraryPath_x64)</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -192,6 +204,12 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>copy /y "%GENICAM_GENTL64_PATH%\bgapi2_genicam.dll" "$(TargetDir)"
+copy /y "%GENICAM_GENTL64_PATH%\MathParser.dll" "$(TargetDir)"
+copy /y "C:\Program Files\MATLAB\R2016a\bin\win64\vcomp100.dll" "$(TargetDir)"
+copy /y "C:\Program Files\opencv\build\x64\vc14\bin\opencv_world320.dll" "$(TargetDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="hlp\AOSACA.hhc" />
@@ -306,6 +324,7 @@ echo.
     <ClInclude Include="DMirror.h" />
     <ClInclude Include="DMMapDlg.h" />
     <ClInclude Include="MyEditCtrl.h" />
+    <ClInclude Include="OpenGLControl.h" />
     <ClInclude Include="OptCalc.h" />
     <ClInclude Include="ProgressDlg.h" />
     <ClInclude Include="PSFDlg.h" />
@@ -407,6 +426,7 @@ makehm /h /a afxhh.h IDW_,HIDW_,0x50000 "%(FullPath)" &gt;&gt; "hlp\HTMLDefines.
     <ClCompile Include="DMirror.cpp" />
     <ClCompile Include="DMMapDlg.cpp" />
     <ClCompile Include="MyEditCtrl.cpp" />
+    <ClCompile Include="OpenGLControl.cpp" />
     <ClCompile Include="OptCalc.cpp" />
     <ClCompile Include="ProgressDlg.cpp" />
     <ClCompile Include="PSFDlg.cpp" />

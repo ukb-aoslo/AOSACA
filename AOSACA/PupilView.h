@@ -1,6 +1,4 @@
 #pragma once
-
-
 #define PUPIL_CAM_WIDTH		320
 #define PUPIL_CAM_HEIGHT	240
 #include "afxwin.h"

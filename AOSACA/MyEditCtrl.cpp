@@ -72,7 +72,7 @@ void CMyEditCtrl::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 		{			
 			if (nChar >= 48 && nChar <= 57)
 			{
-				if ((length < 1 && nChar != 48) || (length >=1))
+				if ((length < 1 && nChar != 48) || (length >= 1) || (length < 1 && nChar == 48))
 					isValid = true;
 			}
 		}

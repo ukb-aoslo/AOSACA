@@ -17,7 +17,8 @@ extern CCentroid	*g_centroids;
 
 IMPLEMENT_DYNAMIC(CWFSImageDlg, CDialogEx)
 
-CWFSImageDlg::CWFSImageDlg(CWnd* pParent /*=NULL*/)
+
+CWFSImageDlg::CWFSImageDlg(CWnd* pParent /*=NULL*/) 
 	: CDialogEx(CWFSImageDlg::IDD, pParent)
 {
 	m_pParent=(CAOSACADlg *)pParent;
@@ -84,7 +85,6 @@ BOOL CWFSImageDlg::OnEraseBkgnd(CDC* pDC)
 BOOL CWFSImageDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
-
 	// TODO:  Add extra initialization here
 	CFont *fnt1;
 	fnt1 = new CFont();
@@ -141,6 +141,7 @@ void CWFSImageDlg::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
 	// TODO: Add your message handler code here
+	
 	if (m_BUpdate)
 	{
 		BYTE *pCurRowPixel = (BYTE *)(pDIBSectionBits);
@@ -167,7 +168,7 @@ void CWFSImageDlg::OnPaint()
 				for (short indexy=0; indexy<g_AOSACAParams->LENSLETGRID; indexy++)
 					if (usSearchArray[indexy*g_AOSACAParams->LENSLETGRID+indexx] == 1)
 					pRects[nboxcount++] = RectF(dBoxCenters[indexx<<1] - g_AOSACAParams->SEARCHBOX_SIZE/2,
-												g_AOSACAParams->IMAGE_WIDTH_PIX - dBoxCenters[(indexy<<1)+1] - g_AOSACAParams->SEARCHBOX_SIZE/2,
+												g_AOSACAParams->IMAGE_HEIGHT_PIX - dBoxCenters[(indexy<<1)+1] - g_AOSACAParams->SEARCHBOX_SIZE/2,
 												g_AOSACAParams->SEARCHBOX_SIZE, g_AOSACAParams->SEARCHBOX_SIZE);
 
 
@@ -195,7 +196,7 @@ void CWFSImageDlg::OnPaint()
 			for (int i=0; i<sTotalCentroids; i++)
 			{		
 				x = (long) (dCentroids[i]);
-				y = (long) (dCentroids[i+sTotalCentroids]);
+				y = (long) (dCentroids[i + sTotalCentroids]);
 
 				if (bUseCentroid[i])
 				{
@@ -203,11 +204,12 @@ void CWFSImageDlg::OnPaint()
 					{
 						if (i == sGeoCentind)
 						{
-							cdc->SetPixelV(x, y, RGB(30,144,255));
+							// NEGLECT CENTER SPOT (WOLF'S WFS)
+							/*cdc->SetPixelV(x, y, RGB(30,144,255));
 							cdc->SetPixelV(x, y-3, RGB(30,144,255));
 							cdc->SetPixelV(x, y+3, RGB(30,144,255));
 							cdc->SetPixelV(x-3, y, RGB(30,144,255));
-							cdc->SetPixelV(x+3, y, RGB(30,144,255));
+							cdc->SetPixelV(x+3, y, RGB(30,144,255));*/
 						}
 						else
 						{
@@ -234,6 +236,16 @@ void CWFSImageDlg::OnPaint()
 		}
 		m_BUpdate = false;
 	}
+	// put a green spot in center
+	CDC *cdc;
+	cdc = Display->GetDC();
+	cdc->SetPixelV(g_AOSACAParams->IMAGE_WIDTH_PIX / 2-1, g_AOSACAParams->IMAGE_HEIGHT_PIX / 2 - 1, RGB(0, 255, 0));
+	cdc->SetPixelV(g_AOSACAParams->IMAGE_WIDTH_PIX / 2, g_AOSACAParams->IMAGE_HEIGHT_PIX / 2-1, RGB(0, 255, 0));
+	cdc->SetPixelV(g_AOSACAParams->IMAGE_WIDTH_PIX / 2-1, g_AOSACAParams->IMAGE_HEIGHT_PIX / 2, RGB(0, 255, 0));
+	cdc->SetPixelV(g_AOSACAParams->IMAGE_WIDTH_PIX / 2, g_AOSACAParams->IMAGE_HEIGHT_PIX / 2, RGB(0, 255, 0));
+
+	Display->ReleaseDC(cdc);
+
 	// Do not call CDialogEx::OnPaint() for painting messages
 }
 
@@ -245,7 +257,7 @@ LRESULT CWFSImageDlg::OnUpdateWindow(WPARAM wParam, LPARAM lParam)
 	case UPDATE_WINDOW:	
 		m_BUpdate = true;
 		OnPaint();
-//		Invalidate(false);
+		//Invalidate(false);
 		break;
 	default:
 		break;
@@ -261,19 +273,19 @@ LRESULT CWFSImageDlg::OnUpdateWindow(WPARAM wParam, LPARAM lParam)
 void CWFSImageDlg::InitParam() 
 {	
 	SetWFSImageColor();	
-
 	Display = GetDlgItem(IDH_WFSIMAGE);
-	this->GetClientRect(&m_imagedisp_rect);
+	//this->GetClientRect(&m_imagedisp_rect);
 	m_slx = 2;
-	m_sly = 30;
-	Display->SetWindowPos(NULL, m_slx, m_sly, g_AOSACAParams->IMAGE_HEIGHT_PIX, g_AOSACAParams->IMAGE_WIDTH_PIX, SWP_FRAMECHANGED);	
-	Display->GetClientRect(&m_imagedisp_rect);
-	m_WFImageDisp.GetClientRect(&m_imagedisp_rect);
+	m_sly = 40;
+	Display->SetWindowPos(NULL, m_slx, m_sly, g_AOSACAParams->IMAGE_WIDTH_PIX, g_AOSACAParams->IMAGE_HEIGHT_PIX, SWP_FRAMECHANGED);
+	//Display->GetClientRect(&m_imagedisp_rect);
+	//m_WFImageDisp.GetClientRect(&m_imagedisp_rect);
 	imagedisp = new Graphics(m_WFImageDisp.GetDC()->GetSafeHdc());
 	matrix = new Matrix(1,0,0,-1,0,0); // Method1
 	matrix->Translate(0,g_AOSACAParams->IMAGE_HEIGHT_PIX,MatrixOrderAppend); // Method1
-	imagedisp->SetTransform(matrix); // Method1	
- 
+	imagedisp->SetPixelOffsetMode(PixelOffsetModeHalf);
+	imagedisp->SetTransform(matrix); // Method1
+
 	if( m_CMapBargraybmp.m_hObject == 0 && m_CMapBargraybmp.LoadBitmap( IDB_GRAYCMAP ) )  
 	{
 		m_CMapBargray.SetBitmap( m_CMapBargraybmp );
@@ -282,8 +294,8 @@ void CWFSImageDlg::InitParam()
 	{
 		m_CMapBarsummer.SetBitmap( m_CMapBarsummerbmp );
 	}
-	m_CMapBargray.SetWindowPos(NULL, m_slx, 5, 512, 20, SWP_FRAMECHANGED);
-	m_CMapBarsummer.SetWindowPos(NULL, m_slx, 5, 512, 20, SWP_FRAMECHANGED);
+	m_CMapBargray.SetWindowPos(NULL, m_slx, 5, 510, 20, SWP_FRAMECHANGED);
+	m_CMapBarsummer.SetWindowPos(NULL, m_slx, 5, 510, 20, SWP_FRAMECHANGED);
 }
 
 void CWFSImageDlg::setCapture_ImageDlg(void)

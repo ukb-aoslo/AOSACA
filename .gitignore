@@ -19,8 +19,9 @@
 [Xx]86/
 [Bb]uild/
 bld/
-[Bb]in/
+#[Bb]in/
 [Oo]bj/
+
 
 # Visual Studio 2015 cache/options directory
 .vs/
@@ -36,6 +37,7 @@ AOSACA/utils/FreeImage/
 AOSACA/utils/optivec/
 AOSACA/utils/pointgrey
 AOSACA/utils/alpao
+AOSACA/utils/Pmats
 
 # NUNIT
 *.VisualState.xml

@@ -1,6 +1,6 @@
 #pragma once
 #include "afxwin.h"
-
+#include "OpenGLControl.h"
 
 #define MOUSE_ADJUST_X	5
 #define MOUSE_ADJUST_Y	5
@@ -11,7 +11,7 @@
 
 class CWFSImageDlg : public CDialogEx
 {
-	DECLARE_DYNAMIC(CWFSImageDlg)
+DECLARE_DYNAMIC(CWFSImageDlg)
 
 public:
 	CWFSImageDlg(CWnd* pParent = NULL);   // standard constructor

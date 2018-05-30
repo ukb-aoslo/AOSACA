@@ -218,6 +218,9 @@
     <ClInclude Include="AOSACAParamsDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OpenGLControl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AOSACA.cpp">
@@ -278,6 +281,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AOSACAParamsDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGLControl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

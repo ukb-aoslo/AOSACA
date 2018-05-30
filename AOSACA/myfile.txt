@@ -1,0 +1,2 @@
+ExceptionType:    ObjectInvalidException
+ErrorDescription: Access to an invalid DeviceListData object.

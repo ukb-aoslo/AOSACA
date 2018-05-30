@@ -89,9 +89,17 @@ CCentroid::CCentroid()
 	m_bRenewPmat = false;
 	m_bPenalizeTipTilt = false;
 	m_dPmat_Zernike			= NULL;
+	m_dPmat_rcZero			= NULL;
 	m_dReconM_Zer			= NULL;	
 	m_dPmat_new				= NULL;
 	m_dPmatT				= NULL;
+
+	//added by Francesco 2016
+	m_dActMask = NULL;
+	m_dActMaskFull = NULL;
+	m_dAct_Positions_um_squared = NULL;
+	m_bUse_actuator = NULL;
+	//end
 
 	InitializeCentroidSystemParameters();
 
@@ -159,6 +167,7 @@ void CCentroid::UnInitialize_Matrices()
 	if (m_dPhiV != NULL) delete [] m_dPhiV, m_dPhiV=NULL;
 //	if (m_dZ4DefocusV != NULL) delete [] m_dZ4DefocusV, m_dZ4DefocusV=NULL;
 	if (m_dZM != NULL) delete [] m_dZM, m_dZM=NULL;	
+	if (m_dPmat_rcZero != NULL) delete[] m_dPmat_rcZero, m_dPmat_rcZero = NULL; // added by Francesco 2016
 
 ////////added by Jim 2015
 	//for Southwell
@@ -173,6 +182,13 @@ void CCentroid::UnInitialize_Matrices()
 	if (m_dReconM_Zer != NULL) delete [] m_dReconM_Zer, m_dReconM_Zer=NULL;
 	if (m_dReconM_fullpupil != NULL) delete [] m_dReconM_fullpupil, m_dReconM_fullpupil=NULL;
 ///////////	
+
+	//added by Francesco 2016	
+	if (m_dActMask != NULL) delete[] m_dActMask;
+	if (m_dActMaskFull != NULL) delete[] m_dActMaskFull;
+	if (m_dAct_Positions_um_squared != NULL) delete[] m_dAct_Positions_um_squared;
+	if (m_bUse_actuator != NULL) delete[] m_bUse_actuator;
+	//end
 }
 
 void CCentroid::Initialize_Matrices()
@@ -180,6 +196,10 @@ void CCentroid::Initialize_Matrices()
 	short size = m_nTotalCentroids<<1;
 	m_dPmat = new double[size*(g_AOSACAParams->NUMACTS)];
 	memset(m_dPmat, 0, (size*(g_AOSACAParams->NUMACTS))*sizeof(double));
+	//added by Francesco 2016
+	m_dPmat_rcZero = new double[size*(g_AOSACAParams->NUMACTS)];
+	memset(m_dPmat_rcZero, 0, (size*(g_AOSACAParams->NUMACTS)) * sizeof(double));
+	//end
 	m_dReconM = new double[(g_AOSACAParams->NUMACTS)*size];
 	memset(m_dReconM, 0, ((g_AOSACAParams->NUMACTS)*size)*sizeof(double));
 	m_dRefPhiV = new double[size];
@@ -206,6 +226,17 @@ void CCentroid::Initialize_Matrices()
 	memset(m_dWFS_Lens_Position_mm, 0, (m_nTotalCentroids)*sizeof(double));
 	m_dReconM_fullpupil = new double[(g_AOSACAParams->NUMACTS)*size];
 	memset(m_dReconM_fullpupil, 0, ((g_AOSACAParams->NUMACTS)*size)*sizeof(double));
+	//added by Francesco 2016
+	short sizeDM_Grid_Squared = g_AOSACAParams->DMGRID*g_AOSACAParams->DMGRID;
+	m_dActMask = new double[sizeDM_Grid_Squared];
+	memset(m_dActMask, 0, (sizeDM_Grid_Squared) * sizeof(double));
+	m_dActMaskFull = new double[sizeDM_Grid_Squared];
+	memset(m_dActMaskFull, 0, (sizeDM_Grid_Squared) * sizeof(double));
+	m_dAct_Positions_um_squared = new double[sizeDM_Grid_Squared];
+	memset(m_dAct_Positions_um_squared, 0, (sizeDM_Grid_Squared) * sizeof(double));
+	m_bUse_actuator = new bool[g_AOSACAParams->NUMACTS];
+	memset(m_bUse_actuator, 0, (g_AOSACAParams->NUMACTS) * sizeof(bool));
+	//end
 	//////for Zernike control
 	m_dPmat_Zernike = new double[MAX_TERM_NUMBER*(g_AOSACAParams->NUMACTS)];
 	memset(m_dPmat_Zernike, 0, (MAX_TERM_NUMBER*(g_AOSACAParams->NUMACTS))*sizeof(double));
@@ -260,14 +291,20 @@ bool CCentroid::Generate_Reconstructor()
 	MD_mulM(&temp, &m_dVmat_S, &m_dWImat_S, (g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS));
 	MD_mulMT(&temp, &temp, &m_dUmat_S,(g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS));
 	MD_mulMT(&m_dReconM, &temp, &m_dPmat, (g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS), (m_nTotalCentroids<<1));
+	MD_mulMT(&m_dReconM, &temp, &m_dPmat_rcZero, (g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS), (m_nTotalCentroids << 1)); // added by Francesco 2016, Replaced m_dPmat to m_dPmat_rcZero
 	///////////used for open loop
-	if (pupil_usedforcorrection==g_AOSACAParams->PUPIL_FIT_SIZE_MICRONS/1000)
+	if (pupil_usedforcorrection==g_AOSACAParams->PUPIL_FIT_SIZE_MICRONS/1000.)
 	{
+		memcpy(m_dWImat_S, m_dWImat_S_cpy, (g_AOSACAParams->NUMACTS)*(g_AOSACAParams->NUMACTS) * sizeof(double));
+		for (i = 1; i<10/*modes to ignore for open loop correction*/; i++)
+			m_dWImat_S[((g_AOSACAParams->NUMACTS) - i)*(g_AOSACAParams->NUMACTS) + ((g_AOSACAParams->NUMACTS) - i)] = 0;
+
 		for (i=1; i<(short)((g_AOSACAParams->NUMACTS-20)); i++)
 			m_dWImat_S[((g_AOSACAParams->NUMACTS)-i)*(g_AOSACAParams->NUMACTS)+((g_AOSACAParams->NUMACTS)-i)] = 0;		
+
 		MD_mulM(&temp, &m_dVmat_S, &m_dWImat_S, (g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS));
 		MD_mulMT(&temp, &temp, &m_dUmat_S,(g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS));
-		MD_mulMT(&m_dReconM_fullpupil, &temp, &m_dPmat, (g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS), (m_nTotalCentroids<<1));
+		MD_mulMT(&m_dReconM_fullpupil, &temp, &m_dPmat_rcZero, (g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS), (m_nTotalCentroids << 1)); // added by Francesco 2016, Replaced m_dPmat to m_dPmat_rcZero
 	}
 
 	m_bRecon = true;
@@ -287,7 +324,17 @@ void CCentroid::Generate_PTPmat()
 	memset(m_dPmat_Copy, 0, ((m_nTotalCentroids<<1)*(g_AOSACAParams->NUMACTS))*sizeof(double));
 
 	memcpy(m_dPmat_Copy, m_dPmat, (m_nTotalCentroids<<1)*(g_AOSACAParams->NUMACTS)*sizeof(double));
-
+	
+	// added by Francesco 2016
+	int count_bUse_actuator;
+	count_bUse_actuator = 0;
+	for (int col3 = 0; col3<(g_AOSACAParams->NUMACTS); col3++)
+		{
+		if (m_bUse_actuator[col3] == 0)
+			 count_bUse_actuator++;
+		}
+	// end
+	
 	int boxindex, col;
 	boxindex=0;
 	for (boxindex=0;boxindex<m_nTotalCentroids;boxindex++)
@@ -300,9 +347,26 @@ void CCentroid::Generate_PTPmat()
 				m_dPmat_Copy[(m_nTotalCentroids+boxindex)*(g_AOSACAParams->NUMACTS)+col]=0;
 			}				
 		}	
+		// added by Francesco 2016
+		else
+		{
+			if (count_bUse_actuator != g_AOSACAParams->NUMACTS) // Make sure only to do this is m_bUse_actuator has been calculated before at least once and is not all false
+			{
+				for (col = 0; col < (g_AOSACAParams->NUMACTS); col++)
+				{
+					if (m_bUse_actuator[col] == 0)
+					{
+						m_dPmat_Copy[boxindex*(g_AOSACAParams->NUMACTS) + col] = 0;
+						m_dPmat_Copy[(m_nTotalCentroids + boxindex)*(g_AOSACAParams->NUMACTS) + col] = 0;
+					}
+				}
+			}
+		}
+		// end
 	}
 
-	MD_TmulM( &temp0, &m_dPmat_Copy, &m_dPmat_Copy, (m_nTotalCentroids<<1), (g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS) );		
+	memcpy(m_dPmat_rcZero, m_dPmat_Copy, (m_nTotalCentroids << 1)*(g_AOSACAParams->NUMACTS) * sizeof(double)); // added by Francesco 2016
+	MD_TmulM(&temp0, &m_dPmat_rcZero, &m_dPmat_rcZero, (m_nTotalCentroids << 1), (g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS));	// added by Francesco 2016, replaced Copy with rcZero	
 	double u;
 	u=0.01;
 	if (m_bPmat_Zernike_ready && m_bPenalizeTipTilt)
@@ -385,10 +449,11 @@ void CCentroid::Make_Search_Array (float pupil_dia)
 	memset(X, 0, g_AOSACAParams->LENSLETGRID*g_AOSACAParams->LENSLETGRID*sizeof(double));
 	Y = new double[g_AOSACAParams->LENSLETGRID*g_AOSACAParams->LENSLETGRID];
 	memset(Y, 0, g_AOSACAParams->LENSLETGRID*g_AOSACAParams->LENSLETGRID*sizeof(double));
-	
+
 	MD_Col_extract( x, &m_dBox_center, g_AOSACAParams->LENSLETGRID, 2, 1 );
 	MD_transpose( &y, &x, g_AOSACAParams->LENSLETGRID, 1);
 	MD_Col_extract( x, &m_dBox_center, g_AOSACAParams->LENSLETGRID, 2, 0 );
+	
 	//Mesh grid
 	double *ones;
 	ones = new double[g_AOSACAParams->LENSLETGRID];
@@ -396,7 +461,8 @@ void CCentroid::Make_Search_Array (float pupil_dia)
 	VD_equC(ones, g_AOSACAParams->LENSLETGRID, 1.0);
 	MD_mulM(&X, &ones, &x, g_AOSACAParams->LENSLETGRID, 1, g_AOSACAParams->LENSLETGRID);
 	MD_mulMT(&Y, &y, &ones, g_AOSACAParams->LENSLETGRID, 1, g_AOSACAParams->LENSLETGRID);
-	delete [] x, x=NULL;
+	
+	delete [] x, x = NULL;
 	delete [] y, y = NULL;
 	delete [] ones, ones = NULL;
 	
@@ -412,10 +478,9 @@ void CCentroid::Make_Search_Array (float pupil_dia)
 	memset(X2, 0, g_AOSACAParams->LENSLETGRID*g_AOSACAParams->LENSLETGRID*sizeof(double));
 	Y2 = new double[g_AOSACAParams->LENSLETGRID*g_AOSACAParams->LENSLETGRID];	
 	memset(Y2, 0, g_AOSACAParams->LENSLETGRID*g_AOSACAParams->LENSLETGRID*sizeof(double));
-	VDx_square( X2, X, g_AOSACAParams->LENSLETGRID*g_AOSACAParams->LENSLETGRID, 1.0, -xcenterpoint );
-	VDx_square( Y2, Y, g_AOSACAParams->LENSLETGRID*g_AOSACAParams->LENSLETGRID, 1.0, -ycenterpoint );
+	VDx_square( X2, X, g_AOSACAParams->LENSLETGRID*g_AOSACAParams->LENSLETGRID, 1.0, - xcenterpoint );
+	VDx_square( Y2, Y, g_AOSACAParams->LENSLETGRID*g_AOSACAParams->LENSLETGRID, 1.0, - ycenterpoint );
 	VD_addV( dSearch_array, X2, Y2, g_AOSACAParams->LENSLETGRID*g_AOSACAParams->LENSLETGRID );
-
 	VD_cmp_leC( dSearch_array, dSearch_array, g_AOSACAParams->LENSLETGRID*g_AOSACAParams->LENSLETGRID, pow(pixelradius,2));
 	m_nTotalCentroids = (short)VD_sum(dSearch_array, g_AOSACAParams->LENSLETGRID*g_AOSACAParams->LENSLETGRID);
 	VD_roundtoUS(m_usSearch_array, dSearch_array, g_AOSACAParams->LENSLETGRID*g_AOSACAParams->LENSLETGRID);
@@ -430,20 +495,21 @@ void CCentroid::Make_Search_Array (float pupil_dia)
 	m_centroid_matrix = new CMasterCentroid(m_nTotalCentroids);
 	for (short indexx=0; indexx<g_AOSACAParams->LENSLETGRID; indexx++)
 	{
-		for (short indexy=0; indexy<g_AOSACAParams->LENSLETGRID; indexy++)
+		for (short indexy = 0; indexy<g_AOSACAParams->LENSLETGRID; indexy++)
 		{
-			m_bWFSMask[indexy*g_AOSACAParams->LENSLETGRID+indexx]=m_usSearch_array[indexy*g_AOSACAParams->LENSLETGRID+indexx];  //added by Jim
+			m_bWFSMask[indexy*g_AOSACAParams->LENSLETGRID+indexx] = m_usSearch_array[indexy*g_AOSACAParams->LENSLETGRID+indexx];  //added by Jim
+			
 			if (m_usSearch_array[indexy*g_AOSACAParams->LENSLETGRID+indexx] == 1)
 			{ 
 				m_nWFS_index[indexy+g_AOSACAParams->LENSLETGRID*indexx]=m_centroid_matrix->m_sFound_cent_count;  //added by Jim
 				m_centroid_matrix->m_dCentroidV[m_centroid_matrix->m_sFound_cent_count] = m_centroid_matrix->m_dRef_centersV[m_centroid_matrix->m_sFound_cent_count] = m_dBox_center[indexx<<1];
-				m_centroid_matrix->m_dCentroidV[m_centroid_matrix->m_sFound_cent_count+m_nTotalCentroids] = m_centroid_matrix->m_dRef_centersV[m_centroid_matrix->m_sFound_cent_count+m_nTotalCentroids] = m_dBox_center[(indexy<<1)+1];
+				m_centroid_matrix->m_dCentroidV[m_centroid_matrix->m_sFound_cent_count+m_nTotalCentroids] = m_centroid_matrix->m_dRef_centersV[m_centroid_matrix->m_sFound_cent_count+m_nTotalCentroids] = m_dBox_center[(indexy << 1) + 1];
 				m_centroid_matrix->m_bFound[m_centroid_matrix->m_sFound_cent_count] = m_centroid_matrix->m_bUse_centroid[m_centroid_matrix->m_sFound_cent_count] = true;
 				m_centroid_matrix->m_dAverageintensity[m_centroid_matrix->m_sFound_cent_count] = m_centroid_matrix->m_sPeakintensity[m_centroid_matrix->m_sFound_cent_count] = 0;
 				//added by Jim
 				m_dWFS_Lens_Position_mm[m_centroid_matrix->m_sFound_cent_count] = sqrt(double((indexy - (g_AOSACAParams->LENSLETGRID-1)/2) * (indexy - (g_AOSACAParams->LENSLETGRID-1)/2) + (indexx - (g_AOSACAParams->LENSLETGRID-1)/2) * (indexx - (g_AOSACAParams->LENSLETGRID-1)/2)))*g_AOSACAParams->LENSLET_DIAMETER_MICRONS/1000;
 				m_sGrid_array[indexy*g_AOSACAParams->LENSLETGRID+indexx] = m_centroid_matrix->m_sFound_cent_count;	//temporary variable for Wolf's WFS camera, must be removed once the camera is updated
-				if (m_dBox_center[indexx<<1] == (g_AOSACAParams->PUPIL_CENTER).x && m_dBox_center[(indexy<<1)+1] == (g_AOSACAParams->PUPIL_CENTER).y)
+				if (m_dBox_center[indexx<<1] == (g_AOSACAParams->PUPIL_CENTER).x && m_dBox_center[(indexy << 1) + 1] == (g_AOSACAParams->PUPIL_CENTER).y)
 					m_centroid_matrix->m_sGeo_cent_ind = m_centroid_matrix->m_sFound_cent_count;
 				m_centroid_matrix->m_sFound_cent_count++;				
 			}
@@ -451,7 +517,58 @@ void CCentroid::Make_Search_Array (float pupil_dia)
 	}
 	m_centroid_matrix->m_sUse_cent_count = m_centroid_matrix->m_sFound_cent_count;
 	m_bMinCent = true;
+	
 }
+
+//added by Francesco 2016
+void CCentroid::Make_Search_Array_Act(float pupil_dia)
+{
+	double xcenterpoint, ycenterpoint;
+	double *x, *y, *X, *Y, actPitch;
+	x = new double[g_AOSACAParams->DMGRID];
+	memset(x, 0, g_AOSACAParams->DMGRID * sizeof(double));
+	y = new double[g_AOSACAParams->DMGRID];
+	memset(y, 0, g_AOSACAParams->DMGRID * sizeof(double));
+	X = new double[g_AOSACAParams->DMGRID*g_AOSACAParams->DMGRID];
+	memset(X, 0, g_AOSACAParams->DMGRID*g_AOSACAParams->DMGRID * sizeof(double));
+	Y = new double[g_AOSACAParams->DMGRID*g_AOSACAParams->DMGRID];
+	memset(Y, 0, g_AOSACAParams->DMGRID*g_AOSACAParams->DMGRID * sizeof(double));
+	actPitch = 800; // Hard coded, actuator pitch = 800 um for Alpao 97 actuator DM
+	xcenterpoint = (g_AOSACAParams->DMGRID) / double(2)*actPitch; // Should be 4400 um
+	ycenterpoint = xcenterpoint;
+	short index;
+	for (index = 0; index < g_AOSACAParams->DMGRID; index++)
+	{
+		x[index] = actPitch / 2 + index*actPitch;
+		y[index] = actPitch / 2 + index*actPitch;
+	}
+
+	//Mesh grid
+	double *ones;
+	ones = new double[g_AOSACAParams->DMGRID];
+	memset(ones, 0, g_AOSACAParams->DMGRID * sizeof(double));
+	VD_equC(ones, g_AOSACAParams->DMGRID, 1.0);
+	MD_mulM(&X, &ones, &x, g_AOSACAParams->DMGRID, 1, g_AOSACAParams->DMGRID);
+	MD_mulMT(&Y, &y, &ones, g_AOSACAParams->DMGRID, 1, g_AOSACAParams->DMGRID);
+	delete[] x, x = NULL;
+	delete[] y, y = NULL;
+	delete[] ones, ones = NULL;
+	double pupil_rad = (pupil_dia / 2.0);
+	double *X2, *Y2;
+	X2 = new double[g_AOSACAParams->DMGRID*g_AOSACAParams->DMGRID];
+	memset(X2, 0, g_AOSACAParams->DMGRID*g_AOSACAParams->DMGRID * sizeof(double));
+	Y2 = new double[g_AOSACAParams->DMGRID*g_AOSACAParams->DMGRID];
+	memset(Y2, 0, g_AOSACAParams->DMGRID*g_AOSACAParams->DMGRID * sizeof(double));
+	VDx_square(X2, X, g_AOSACAParams->DMGRID*g_AOSACAParams->DMGRID, 1.0, -xcenterpoint);
+	VDx_square(Y2, Y, g_AOSACAParams->DMGRID*g_AOSACAParams->DMGRID, 1.0, -ycenterpoint);
+	VD_addV(m_dAct_Positions_um_squared, X2, Y2, g_AOSACAParams->DMGRID*g_AOSACAParams->DMGRID);
+	VD_cmp_leC(m_dActMaskFull, m_dAct_Positions_um_squared, g_AOSACAParams->DMGRID*g_AOSACAParams->DMGRID, pow(1.25*pupil_dia / 2, 2));
+	delete[] X, X = NULL;
+	delete[] Y, Y = NULL;
+	delete[] X2, X2 = NULL;
+	delete[] Y2, Y2 = NULL;
+}
+//end
 
 int CCentroid::get_NormalizedCenters(double *normalizedgridV, double pupil_dia)
 {
@@ -565,7 +682,7 @@ void CCentroid::Estimate_Center(bool reset_user_center)
 	{
 		if (m_centroid_matrix->m_bFound[index])
 		{
-		/*	/////////////////// Only for AOLSO VI /////////////////////temporary for Wolf's WFS camera, must be removed once the camera is updated
+			/////////////////// Only for AOLSO VI /////////////////////temporary for Wolf's WFS camera, must be removed once the camera is updated
 			if (index == m_centroid_matrix->m_sGeo_cent_ind) //find the real geo center using centroid of a polygon algorithm
 				for (short indexx=0; indexx<g_AOSACAParams->LENSLETGRID; indexx++)
 					for (short indexy=0; indexy<g_AOSACAParams->LENSLETGRID; indexy++)
@@ -575,7 +692,7 @@ void CCentroid::Estimate_Center(bool reset_user_center)
 							m_centroid_matrix->m_dCentroidV[index] = center.x;
 							m_centroid_matrix->m_dCentroidV[index+m_nTotalCentroids] = center.y;
 						}
-			////////////////////////////////*/
+			////////////////////////////////
 			dist = sqrt(pow(((g_AOSACAParams->PUPIL_CENTER).x - m_centroid_matrix->m_dCentroidV[index]),2)+
 				pow(((g_AOSACAParams->PUPIL_CENTER).y - m_centroid_matrix->m_dCentroidV[index+m_nTotalCentroids]),2));
 			if (dist <= dist_prev)
@@ -609,10 +726,14 @@ bool CCentroid::find_centroid(int boxindex,unsigned char *imgbuf)
 
 //	width=CentDispRect.right-CentDispRect.left-14; // Setting the width for centroids = 500
 //	height=CentDispRect.bottom-CentDispRect.top-14; // Setting the height for centroids = 500
-	if(center.x < 0 || center.y < 0	|| center.x > g_AOSACAParams->IMAGE_HEIGHT_PIX || center.y > g_AOSACAParams->IMAGE_WIDTH_PIX)
-		; 
+	if(center.x < 0 || center.y < 0	|| center.x > g_AOSACAParams->IMAGE_HEIGHT_PIX || center.y > g_AOSACAParams->IMAGE_WIDTH_PIX); 
 	else
 	{
+		if (m_centroid_matrix->m_sGeo_cent_ind == boxindex) // IGNORE CENTER (FOR WOLF'S WFS)
+		{
+			m_centroid_matrix->m_bFound[boxindex] = true;
+			return (m_centroid_matrix->m_bFound[boxindex]);
+		}
 		m_centroid_matrix->m_bFound[boxindex] = false;
 		if (max_in_box(&center, g_AOSACAParams->SEARCHBOX_SIZE, g_AOSACAParams->SEARCHBOX_SIZE, imgbuf, &peakint))
 		{
@@ -842,13 +963,15 @@ CString CCentroid::SaveCentroidTextFile(CString centtextfile)
 
 }//**********************************************************************************************************
 
-void CCentroid::SavePmat()
+CStringA CCentroid::SavePmat()
 {
 	CStringA filename;
 	filename = g_AOSACAParams->g_stAppHomePath+_T("utils\\P_mat.txt");
 	FILE *fp;
 	fp = NULL;
 	fopen_s(&fp, filename,"w+");
+	g_AOSACAParams->g_stAppErrBuff = filename;	
+	g_AOSACAParams->ShowError(MB_ICONWARNING);
 	if (fp)
 	{
 		MD_write(fp, &m_dPmat, m_nTotalCentroids<<1, (g_AOSACAParams->NUMACTS));
@@ -868,6 +991,9 @@ void CCentroid::SavePmat()
 	else
 		AfxMessageBox(_T("Can not open Pmat file to write, check folder permissions") ,MB_OK | MB_ICONERROR | MB_TOPMOST | MB_SETFOREGROUND);
     ////
+
+	return filename;
+
 }
 
 void CCentroid::set_Pmat(double *src)
@@ -886,7 +1012,7 @@ void CCentroid::CalcSlopes(double *dest, bool process)
 	tempPhi = new double[size];
 	memset(tempPhi, 0, (size)*sizeof(double)); 
 	VD_subV(tempPhi, m_centroid_matrix->m_dCentroidV, m_centroid_matrix->m_dRef_centersV, size);
-	//	Remove_Rotation(tempPhi);  //added by Jim
+	//Remove_Rotation(tempPhi);  //added by Jim
 	//////////////////////////
 	Remove_BadSpots(tempPhi);  //set the value of the missing spots 0 //added by Jim
 
@@ -949,16 +1075,17 @@ void CCentroid::CalcSlopes(double *dest, bool process)
 bool CCentroid::Initialize_Phi()//double defocus)
 {
 	double *temp_dZAbber;
-	temp_dZAbber = new double[MAX_TERM_NUMBER+1];
+	temp_dZAbber = new double[MAX_TERM_NUMBER + 1];
 	//VD_mulC(temp_dZAbber, m_dZAbber, MAX_TERM_NUMBER+1, (g_AOSACAParams->MICRONS_PER_PIXEL/(g_AOSACAParams->LENSLET_FOCAL_LENGTH_MICRONS*g_AOSACAParams->MAGNIFICATION)));
-	VD_mulC(temp_dZAbber, m_dZAbber, MAX_TERM_NUMBER+1, (2/(g_AOSACAParams->PUPIL_FIT_SIZE_MICRONS)));
-	MD_mulV(m_dRefPhiV, &m_dZM, temp_dZAbber, m_nTotalCentroids<<1, MAX_TERM_NUMBER+1);
-//	defocus *= (g_AOSACAParams->MICRONS_PER_PIXEL/(g_AOSACAParams->LENSLET_FOCAL_LENGTH_MICRONS*g_AOSACAParams->MAGNIFICATION));
-//	VD_mulC( m_dRefPhiV, m_dZ4DefocusV, m_nTotalCentroids<<1, defocus);
-	memset(m_dErrV, 0, (g_AOSACAParams->NUMACTS)*sizeof(double));
+	VD_mulC(temp_dZAbber, m_dZAbber, MAX_TERM_NUMBER + 1, (2 / (g_AOSACAParams->PUPIL_FIT_SIZE_MICRONS)));
+	MD_mulV(m_dRefPhiV, &m_dZM, temp_dZAbber, m_nTotalCentroids << 1, MAX_TERM_NUMBER + 1);
+	//	defocus *= (g_AOSACAParams->MICRONS_PER_PIXEL/(g_AOSACAParams->LENSLET_FOCAL_LENGTH_MICRONS*g_AOSACAParams->MAGNIFICATION));
+	//	VD_mulC( m_dRefPhiV, m_dZ4DefocusV, m_nTotalCentroids<<1, defocus);
+	memset(m_dErrV, 0, (g_AOSACAParams->NUMACTS) * sizeof(double));
 
 	return true;
 }
+
 
 bool CCentroid::FetchSlopeVector(double *dest, bool *found)
 {
@@ -1117,13 +1244,14 @@ void CCentroid::Generate_Reconstructor_New()
 	if (m_bPmat_Zernike_ready && m_bPenalizeTipTilt)
 	{
 		double *P_tiptilt;
-	P_tiptilt = new double[len*ht];
-	memset(P_tiptilt, 0, (len*ht)*sizeof(double));
-	MD_TmulM( &P_tiptilt, &m_dPmat_Zernike, &m_dPmat_Zernike, 2, (g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS) );
-	//
-	MD_mulC( &P_tiptilt, &P_tiptilt, (g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS), u ) ;
-	MD_addM( &temp0, &temp0, &P_tiptilt, (g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS) );
-	delete [] P_tiptilt,P_tiptilt=NULL;
+		P_tiptilt = new double[len*ht];
+		memset(P_tiptilt, 0, (len*ht) * sizeof(double));
+		MD_TmulM(&P_tiptilt, &m_dPmat_Zernike, &m_dPmat_Zernike, 2, (g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS));
+		//
+		MD_mulC(&P_tiptilt, &P_tiptilt, (g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS), u);
+		MD_addM(&temp0, &temp0, &P_tiptilt, (g_AOSACAParams->NUMACTS), (g_AOSACAParams->NUMACTS));
+		delete[] P_tiptilt, P_tiptilt = NULL;
+
 	}
 
 	double *invtemp;	
@@ -1136,7 +1264,6 @@ void CCentroid::Generate_Reconstructor_New()
 	m_bRecon = true;
 	delete [] temp0, temp0 = NULL;
 	delete [] invtemp, invtemp = NULL;
-	
 
 }
 
@@ -1220,11 +1347,12 @@ void CCentroid::Pinv_SVD(double *MA_pinv, double *MA, unsigned long len , unsign
 }
 
 
-unsigned short  CCentroid::Update_bUse_centroid(double pupilradius)
+unsigned short  CCentroid::Update_bUse_centroid(double pupildia) // Also updates the used actuators
 {
 	int boxindex;
 	unsigned short use_count = 0;
-	
+	double pupilradius = pupildia / 2.;
+
 	for (boxindex=0;boxindex<m_nTotalCentroids;boxindex++)
 	{
 
@@ -1238,6 +1366,23 @@ unsigned short  CCentroid::Update_bUse_centroid(double pupilradius)
 			use_count++;
 		}
 	}
+
+	// added by Francesco 2016
+	VD_cmp_leC(m_dActMask, m_dAct_Positions_um_squared, g_AOSACAParams->DMGRID*g_AOSACAParams->DMGRID, pow(1.15*pupilradius * 1000, 2));
+
+	int countActuator;
+	countActuator = 0;
+	for (int ii = 0; ii < (g_AOSACAParams->DMGRID*g_AOSACAParams->DMGRID); ii++)
+	{
+		if (m_dActMaskFull[ii] == 1)
+		{
+			m_bUse_actuator[countActuator] = (m_dActMask[ii] != 0);
+			countActuator++;
+		}
+	}
+	// end
+
+	pupil_usedforcorrection = pupildia;
 
 	if (m_bRenewPmat== false)
 		Generate_PTPmat();

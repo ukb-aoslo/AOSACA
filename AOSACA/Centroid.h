@@ -75,10 +75,11 @@ public:
 	//Drawing functions
 	void	Draw_GeoCenter(CWnd *hCentroidDisplayArea);
 	void	Make_Search_Array (float pupil_dia);
+	void	Make_Search_Array_Act(float pupil_dia); //added by Francesco 2016, New function to set variables: m_dActMaskFull, m_dAct_Positions_um_squared	
 	
 	// Centroid adjustment functions
 	short	Add_Delete_Centroid(double x, double y); 
-	void	SavePmat();	
+	CStringA SavePmat();
 	void	set_Pmat(double*);
 	void	set_ModestoZero(short nummodes);
 	void	CalcSlopes(double*,bool);
@@ -118,11 +119,14 @@ public:
 	void	Update_Pmat();
 	void	Remove_BadSpots(double *tempPhi3);
 	void	Pinv_SVD(double *MA_pinv, double *MA, unsigned long len, unsigned long ht, unsigned short CutTermNum );
-	unsigned short Update_bUse_centroid(double pupilradius);
+	unsigned short Update_bUse_centroid(double pupildia);
 	double	pupil_usedforcorrection;
 ///////////////
 private:
 	double	*m_dPmat;
+	//added by Francesco 2016
+	double	*m_dPmat_rcZero; //Pmat with rows and columns set to zero by m_bUse_centroid's and m_bUse_actuator's zero positions
+	//end
 	double	*m_dUmat_S;
 	double	*m_dVmat_S;
 	double	*m_dWImat_S;
@@ -147,6 +151,12 @@ private:
 	unsigned short *m_usSearch_array;
 	short	*m_sGrid_array;		//temporary variable for Wolf's WFS camera, must be removed once the camera is updated
 	short	m_sRecon_choice;	//currently being used reconstructor
+	//added by Francesco 2016
+	double	*m_dActMask; // actuator mask for certain pupil size (always of size g_AOSACAParams->DMGRID*g_AOSACAParams->DMGRID)
+	double	*m_dActMaskFull; // actuator mask for full pupil size (always of size g_AOSACAParams->DMGRID*g_AOSACAParams->DMGRID)
+	double	*m_dAct_Positions_um_squared; // positions^2 in um of actuators on DM grid (always of size g_AOSACAParams->DMGRID*g_AOSACAParams->DMGRID)
+	bool	*m_bUse_actuator; // boolean list of actuators to use (always of size g_AOSACAParams->NUMACTS)
+	//end
 
 	// Local operations
 	bool	max_in_box(CDPoint *pcenter, short lengthx, short lengthy, unsigned char *imgbuf, unsigned short *peak);

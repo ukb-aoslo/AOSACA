@@ -42,7 +42,7 @@ CDMirror::~CDMirror()
 
 bool CDMirror::DMInitialize()
 {
-	bool	status = true;
+	bool status = true;
 	dm = NULL;
 	// Convert a TCHAR string to a LPCSTR
 	CT2CA pszConvertedAnsiString (g_AOSACAParams->DM_SERIAL_NO);

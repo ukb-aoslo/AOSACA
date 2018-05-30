@@ -78,6 +78,7 @@ public:
 	short	IMAGE_WIDTH_PIX;
 	short	IMAGE_HEIGHT_PIX;
 	bool	USECOLORMAP;
+	unsigned int CAM_SERIAL_NO;
 	short	EXPOSURE_MS;
 	BYTE	CAMGAIN_DB;
 	double	MICRONS_PER_PIXEL;
@@ -150,7 +151,7 @@ public:
 		if (g_stAppParamsFile.Find(_T("64")) >= 0)
 			strCurrentDir = strCurrentDir.Left(strCurrentDir.ReverseFind('\\'));
 		g_stAppHomePath = strCurrentDir;
-		g_stAppHomePath += "\\";
+		g_stAppHomePath += "\\AOSACA\\";
 		DM_SERIAL_NO.Empty();
 		// Load the system & user parameters from the ini file
 		LoadConfigFile();
@@ -188,9 +189,9 @@ public:
 		if (!DM_SERIAL_NO.IsEmpty())
 		{
 			CString filename;
-			filename.Format(L"utils\\%s.txt",DM_SERIAL_NO);
+			filename.Format(g_stAppHomePath + L"utils\\%s.txt",DM_SERIAL_NO);
 			infile.open(filename, std::ifstream::in);
-			if (infile.fail())
+			if (!infile.fail())
 			{
 				double deflection = 0.;
 				while (infile >> deflection)
@@ -242,7 +243,7 @@ public:
 			greyscale[color_index].rgbReserved = 0;
 		}
 		// Summer colormap
-		infile.open("utils\\WFSColorMap.map", std::ifstream::in);
+		infile.open(g_stAppHomePath + L"utils\\WFSColorMap.map", std::ifstream::in);
 		int r, g, b;
 		i=0;
 		while (infile >> r >> g >> b)
@@ -255,7 +256,7 @@ public:
 		}
 		infile.close();
 		// DM colormap
-		infile.open("utils\\DMColorMap.map", std::ifstream::in);
+		infile.open(g_stAppHomePath + L"utils\\DMColorMap.map", std::ifstream::in);
 		i=0;
 		while (infile >> r >> g >> b)
 		{
@@ -357,6 +358,8 @@ public:
 			IMAGE_HEIGHT_PIX = (short)_tstoi(temp);
 			::GetPrivateProfileString(_T("CameraParams"), _T("USECOLORMAP"), _T(""), temp, 40, g_stAppParamsFile);
 			USECOLORMAP = ((short)_tstoi(temp))?true:false;		
+			::GetPrivateProfileString(_T("CameraParams"), _T("CAM_SERIAL_NO"), _T(""), temp, 40, g_stAppParamsFile);
+			CAM_SERIAL_NO = (unsigned int)_tstoi(temp);
 			::GetPrivateProfileString(_T("CameraParams"), _T("EXPOSURE_MS"), _T(""), temp, 40, g_stAppParamsFile);
 			EXPOSURE_MS	= (short)_tstoi(temp);
 			::GetPrivateProfileString(_T("CameraParams"), _T("CAMGAIN_DB"), _T(""), temp, 40, g_stAppParamsFile);

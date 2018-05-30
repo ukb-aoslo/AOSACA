@@ -66,6 +66,7 @@ public:
 	void	Compute_Voltages();
 	void	SendVoltsTest(double* volts =NULL);
 	void	Send_Voltages(mirror_state state);
+	BOOL	SaveVoltages(CStringA outfile);
 	BOOL	CreateDMDevice();
 	void	reset_ReferenceDefocus() {m_ReferenceDefocus = 0.0;}
 	void	get_DMVoltages(double*);
