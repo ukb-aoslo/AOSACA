@@ -21,6 +21,9 @@
       <UniqueIdentifier>{af80116b-bfe7-4fc1-8792-8316b7116dfa}</UniqueIdentifier>
       <Extensions>htm;html</Extensions>
     </Filter>
+    <Filter Include="Header Files\netcomm">
+      <UniqueIdentifier>{2fd71f98-1118-4596-8603-82f036d7b080}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -221,6 +224,15 @@
     <ClInclude Include="OpenGLControl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="utils\netcomm\SockListener.h">
+      <Filter>Header Files\netcomm</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\netcomm\WinSock2Async.h">
+      <Filter>Header Files\netcomm</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\netcomm\SockClient.h">
+      <Filter>Header Files\netcomm</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AOSACA.cpp">
@@ -285,6 +297,15 @@
     </ClCompile>
     <ClCompile Include="OpenGLControl.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\netcomm\SockListener.cpp">
+      <Filter>Header Files\netcomm</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\netcomm\WinSock2Async.cpp">
+      <Filter>Header Files\netcomm</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\netcomm\SockClient.cpp">
+      <Filter>Header Files\netcomm</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

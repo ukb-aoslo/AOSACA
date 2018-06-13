@@ -119,6 +119,8 @@ COptCalc::~COptCalc()
 			delete [] m_dMatrixD;
 		if (m_dWaveV != NULL) 
 			delete [] m_dWaveV;
+		if (m_Ref_PreZ345 != NULL)
+			delete[] m_Ref_PreZ345;
 		if (m_PreCorrectionVoltages != NULL) 
 			delete m_PreCorrectionVoltages;
 	}

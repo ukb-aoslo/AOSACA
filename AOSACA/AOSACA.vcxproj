@@ -50,7 +50,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
     <PlatformToolset>v140</PlatformToolset>
@@ -128,7 +128,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>ovvc64_8m.lib;ovvc14x64mdd.lib;ASDK.lib;Winmm.lib;vfw32.lib;bgapi2_genicam.lib;opencv_world320d.lib;opengl32.lib;glu32.lib</AdditionalDependencies>
+      <AdditionalDependencies>ovvc64_8m.lib;ovvc14x64mdd.lib;ASDK.lib;Winmm.lib;vfw32.lib;bgapi2_genicam.lib;opencv_world320d.lib;opengl32.lib;glu32.lib;ntdll.lib</AdditionalDependencies>
       <DelayLoadDLLs>
       </DelayLoadDLLs>
       <AdditionalLibraryDirectories>$(VC_LibraryPath_x64);C:\Program Files\Optivec\lib\x64;C:\Program Files\Alpao\SDK\lib\x64;$(WindowsSDK_LibraryPath_x64);C:\Program Files\Baumer\Baumer GAPI SDK\Components\Dev\C++\Lib\x64;C:\Program Files\opencv\build\x64\vc14\lib</AdditionalLibraryDirectories>
@@ -183,7 +183,7 @@ copy /y "C:\Program Files\opencv\build\x64\vc14\bin\opencv_world320d.dll" "$(Tar
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>utils\freeimage;C:\Program Files\Optivec\include;C:\Program Files\Alpao\SDK\include;C:\Program Files\Baumer\Baumer GAPI SDK\Components\Dev\C++\Inc;C:\Program Files\opencv\build\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\utils\freeimage;C:\Program Files\Optivec\include;C:\Program Files\Alpao\SDK\include;C:\Program Files\Baumer\Baumer GAPI SDK\Components\Dev\C++\Inc;C:\Program Files\opencv\build\include</AdditionalIncludeDirectories>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
     </ClCompile>
     <Link>
@@ -191,9 +191,9 @@ copy /y "C:\Program Files\opencv\build\x64\vc14\bin\opencv_world320d.dll" "$(Tar
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>ovvc64_8m.lib;ovvc14x64mdr.lib;ASDK.lib;Winmm.lib;vfw32.lib;bgapi2_genicam.lib;opencv_world320.lib;opengl32.lib;glu32.lib</AdditionalDependencies>
+      <AdditionalDependencies>ovvc64_8m.lib;ovvc14x64mdr.lib;ASDK.lib;Winmm.lib;vfw32.lib;bgapi2_genicam.lib;opencv_world320.lib;opengl32.lib;glu32.lib;ntdll.lib</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>$(VC_LibraryPath_x64);%CVB%Lib\C;C:\Program Files\Optivec\lib\x64;C:\Program Files\Alpao\SDK\lib\x64;C:\Program Files\Baumer\Baumer GAPI SDK\Components\Dev\C++\Lib\x64;C:\Program Files\opencv\build\x64\vc14\lib;$(WindowsSDK_LibraryPath_x64)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(VC_LibraryPath_x64);C:\Program Files\Optivec\lib\x64;C:\Program Files\Alpao\SDK\lib\x64;$(WindowsSDK_LibraryPath_x64);C:\Program Files\Baumer\Baumer GAPI SDK\Components\Dev\C++\Lib\x64;C:\Program Files\opencv\build\x64\vc14\lib</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -333,6 +333,9 @@ echo.
     <ClInclude Include="RTPlotDlg.h" />
     <ClInclude Include="SVMapDlg.h" />
     <ClInclude Include="ThreadClass.h" />
+    <ClInclude Include="utils\netcomm\SockClient.h" />
+    <ClInclude Include="utils\netcomm\SockListener.h" />
+    <ClInclude Include="utils\netcomm\WinSock2Async.h" />
     <ClInclude Include="WFMapDlg.h" />
     <ClInclude Include="WFSImageDlg.h" />
     <CustomBuild Include="Resource.h">
@@ -441,6 +444,18 @@ makehm /h /a afxhh.h IDW_,HIDW_,0x50000 "%(FullPath)" &gt;&gt; "hlp\HTMLDefines.
     </ClCompile>
     <ClCompile Include="SVMapDlg.cpp" />
     <ClCompile Include="ThreadClass.cpp" />
+    <ClCompile Include="utils\netcomm\SockClient.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="utils\netcomm\SockListener.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="utils\netcomm\WinSock2Async.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="WFMapDlg.cpp" />
     <ClCompile Include="WFSImageDlg.cpp" />
   </ItemGroup>

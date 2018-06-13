@@ -24,10 +24,37 @@ CControlPanelDlg::CControlPanelDlg(CWnd* pParent /*=NULL*/)
 	m_bCAutoMeasure = FALSE;
 	m_bCAOtoggle = FALSE;
 	m_bCPreCorrApply = FALSE;
+	m_eNetMsg = new HANDLE[1];
+
+	m_eNetMsg[0] = CreateEvent(NULL, FALSE, FALSE, L"IGUIDE_NETCOMM_EVENT");
+	if (!m_eNetMsg[0]) {
+		AfxMessageBox(L"Failed to create an event for monitoring IGUIDE Communication", MB_ICONEXCLAMATION);
+	}
+	m_strNetRecBuff = new CString();
+	m_pListener_AO = NULL;
+
+	if (CSockClient::SocketInit() != 0) {
+		AfxMessageBox(L"Unable to initialize Windows sockets.", MB_OK | MB_ICONERROR, 0);
+	}
+
+	m_pListener_AO = new CSockListener(&m_strNetRecBuff[0], &m_eNetMsg[0]);
+	if (!m_pListener_AO->InitPort(L"192.168.0.1", 1500)) {
+		AfxMessageBox(L"Unable to open port 1500 for IGUIDE Communication.", MB_OK | MB_ICONERROR, 0);
+	}
+	else if (!m_pListener_AO->Listen()) {
+		AfxMessageBox(L"Unable to listen on port 1500 for IGUIDE Communication.", MB_OK | MB_ICONERROR, 0);
+	}
+	
+	thd_handle = CreateThread(NULL, 0, ThreadNetMsgProcess, this, 0, &thdid_handle);
+	SetThreadPriority(thd_handle, THREAD_PRIORITY_NORMAL);
+
 }
 
 CControlPanelDlg::~CControlPanelDlg()
 {
+	delete m_pListener_AO;
+	CloseHandle(m_eNetMsg[0]);
+	delete m_eNetMsg;
 	OnClose();
 }
 
@@ -91,8 +118,41 @@ BEGIN_MESSAGE_MAP(CControlPanelDlg, CDialogEx)
 	ON_BN_CLICKED(IDB_CONTROL_DM_CLOOPSTOP, &CControlPanelDlg::OnBnClickedControlDmCloopstop)
 	ON_WM_CTLCOLOR()
 	ON_BN_CLICKED(IDC_CONTROL_REFRACTION_APPLY, &CControlPanelDlg::OnBnClickedControlRefractionApply)
+	ON_NOTIFY(NM_THEMECHANGED, IDS_CONTROL_DEFOCUS_FIXEDDEF, &CControlPanelDlg::OnNMThemeChangedControlDefocusFixeddef)
 END_MESSAGE_MAP()
 
+
+DWORD WINAPI CControlPanelDlg::ThreadNetMsgProcess(LPVOID pParam)
+{
+	CControlPanelDlg *parent = (CControlPanelDlg*)pParam;
+	CString msg;
+	char cmd;
+	
+	while (true) {
+		switch (::WaitForMultipleObjects(1, parent->m_eNetMsg, FALSE, INFINITE)) {//Process the message
+		case WAIT_OBJECT_0:
+			msg = parent->m_strNetRecBuff[0];
+			cmd = msg[0];
+			msg = msg.Right(msg.GetLength() - 1);
+			switch (cmd) {
+			case'F': // flatten mirror
+				parent->OnBnClickedControlDmFlat();
+				break;
+			case'-':
+				parent->Update_Defocus(false);
+				break;
+			case'+':
+				parent->Update_Defocus(true);
+				break;
+			case'0':
+				parent->Reset_Defocus();
+				break;
+			}
+		}
+		msg.Empty();
+	}
+
+}
 
 // CControlPanelDlg message handlers
 BOOL CControlPanelDlg::OnInitDialog() 
@@ -1033,18 +1093,34 @@ void CControlPanelDlg::SubBkgnd()
 
 void CControlPanelDlg::Update_Defocus(BOOL direction)
 {
-	CString text;
-	GetDlgItemText(IDE_CONTROL_DEFOCUS_STEPSIZE,text);				
-	m_DefocusStepSize = _ttof(text);
-	if (direction == 1)
-		m_FixedDefocusValue += m_DefocusStepSize;
-	else if (direction == 0)
-		m_FixedDefocusValue -= m_DefocusStepSize;
-	direction = -1;
-	text.Format(_T("%2.3f"),m_FixedDefocusValue);
-	SetDlgItemText(IDE_CONTROL_DEFOCUS_FIXEDDEF,text);
-	send_DM_update_Defocus(m_FixedDefocusValue);
+	if (m_bFlags[20] == true) {	// only do this when loop has been closed for once
+		CString text;
+		GetDlgItemText(IDE_CONTROL_DEFOCUS_STEPSIZE, text);
+		m_DefocusStepSize = _ttof(text);
+		if (direction == 1)
+			m_FixedDefocusValue += m_DefocusStepSize;
+		else if (direction == 0)
+			m_FixedDefocusValue -= m_DefocusStepSize;
+		direction = -1;
+		text.Format(_T("%2.3f"), m_FixedDefocusValue);
+		SetDlgItemText(IDE_CONTROL_DEFOCUS_FIXEDDEF, text);
+		send_DM_update_Defocus(m_FixedDefocusValue);
+	}
 }
+
+void CControlPanelDlg::Reset_Defocus() {
+
+	if (m_bFlags[20] == true) {	// only do this when loop has been closed for once
+		CString text;
+		GetDlgItemText(IDE_CONTROL_DEFOCUS_STEPSIZE, text);
+		m_DefocusStepSize = _ttof(text);
+		m_FixedDefocusValue = 0;
+		text.Format(_T("%2.3f"), m_FixedDefocusValue);
+		SetDlgItemText(IDE_CONTROL_DEFOCUS_FIXEDDEF, text);
+		send_DM_update_Defocus(m_FixedDefocusValue);
+	}
+}
+
 
 void CControlPanelDlg::UpdateCloopmodeStatus()
 {
@@ -1107,4 +1183,13 @@ HBRUSH CControlPanelDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	// TODO:  Return a different brush if the default is not desired
 	return (HBRUSH)(m_frgndbrush.GetSafeHandle());
+}
+
+
+void CControlPanelDlg::OnNMThemeChangedControlDefocusFixeddef(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	// This feature requires Windows XP or greater.
+	// The symbol _WIN32_WINNT must be >= 0x0501.
+	// TODO: Add your control notification handler code here
+	*pResult = 0;
 }

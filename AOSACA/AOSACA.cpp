@@ -59,11 +59,11 @@ BOOL CAOSACAApp::InitInstance()
 	ghAccelTable = LoadAccelerators(AfxGetInstanceHandle(),
 	MAKEINTRESOURCE(IDR_ACCELERATOR1));
 
-	if (!AfxSocketInit())
+	/*if (!AfxSocketInit())
 	{
 		AfxMessageBox(IDP_SOCKETS_INIT_FAILED);
 		return FALSE;
-	}
+	}*/
 
 
 	AfxEnableControlContainer();

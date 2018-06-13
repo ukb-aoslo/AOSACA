@@ -2,6 +2,7 @@
 
 #include "MyEditCtrl.h"
 #include "afxwin.h"
+#include "utils/netcomm/SockListener.h"
 
 #define MAX_SAVE_LENGTH_SECS	120
 
@@ -12,7 +13,8 @@ class CControlPanelDlg : public CDialogEx
 	DECLARE_DYNAMIC(CControlPanelDlg)
 	
 private:
-	CAOSACADlg	*m_pParent;
+	CAOSACADlg* m_pParent;
+
 	//Dialog Edit boxes
 	CMyEditCtrl	m_eCamExp;
 	CMyEditCtrl m_eCamGain;
@@ -32,8 +34,17 @@ private:
 	CBrush m_editbkgndbrush;
 	CBrush m_frgndbrush;
 	
+	// Netcomm listener for remote control
+	CSockListener* m_pListener_AO;
+	HANDLE*		m_eNetMsg;
+	CString*	m_strNetRecBuff;
+	HANDLE		thd_handle;
+	DWORD		thdid_handle;
+
+	static DWORD WINAPI ThreadNetMsgProcess(LPVOID pParam);
+
 	//Program dialog variables
-//	CSockClient	*m_SCClient;
+
 	bool		m_bImaging;
 	bool		m_bSubBkgnd;
 	short		m_MinCent;
@@ -70,6 +81,7 @@ private:
 	void	SubBkgnd();
 	void	createDirectory();
 	void	Update_Defocus(BOOL);
+	void	Reset_Defocus();
 	void	SendImagingCommand(CString);
 	void	send_DM_update_PreCorrection();
 	void	Update_Pupilsize(double pupilsize);
@@ -153,4 +165,5 @@ public:
 	afx_msg void OnBnClickedControlDmCloopstop();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnBnClickedControlRefractionApply();
+	afx_msg void OnNMThemeChangedControlDefocusFixeddef(NMHDR *pNMHDR, LRESULT *pResult);
 };

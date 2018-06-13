@@ -432,7 +432,7 @@ void CAOSACADlg::OnClose()
 	if(g_pupilview) delete g_pupilview;
 	if(g_rtplot) delete g_rtplot;
 	if(g_optcalc) delete g_optcalc;	
-	if(g_camera) g_camera->~CCamera();
+	if(g_camera) delete g_camera;
 	if(g_AOSACAParams->g_bNewPmat)
 	{
 		g_AOSACAParams->g_stAppErrBuff.Empty();

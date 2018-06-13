@@ -67,8 +67,8 @@ CCamera::~CCamera(void)
 
 
 		// Stop capturing images
-		m_pDevice->GetRemoteNode("AcquisitionStop")->Execute();
-		m_pDataStream->StopAcquisition();
+		//m_pDevice->GetRemoteNode("AcquisitionStop")->Execute();
+		//m_pDataStream->StopAcquisition();
 		// Disconnect the camera
 		m_pInterface->Close();
 		m_pSystem->Close();
@@ -94,7 +94,7 @@ bool CCamera::Camera_Initialization()
 
 	//load camera  
 	m_pDeviceList = m_pInterface->GetDevices();
-	m_pDeviceList->Refresh(10);
+	m_pDeviceList->Refresh(100);
 
     if (m_pDeviceList->size() < 1)
     {
