@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "VecALL.h"
-#include "MatALL.h"
+#include "..\Optivec\include\VecAll.H"
+#include "..\Optivec\include\MatALL.h"
 
 #define MAIN_WINDOW_WIDTH	1290
 #define MAIN_WINDOW_HEIGHT	970

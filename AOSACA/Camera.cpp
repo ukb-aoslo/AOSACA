@@ -4,10 +4,10 @@
 #include <sstream>
 #include <fstream>
 #include <iomanip>
-#include "utils\FreeImage\FreeImage.h"
+#include "FreeImage.h"
 
-#pragma comment(lib, "delayimp")
-#pragma comment(lib, "utils\\FreeImage\\FreeImage")
+//#pragma comment(lib, "delayimp")
+//#pragma comment(lib, "\\FreeImage\\FreeImage")
 
 //Optivec library headers
 #pragma once

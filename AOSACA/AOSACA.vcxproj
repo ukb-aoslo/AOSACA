@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -22,7 +22,7 @@
     <ProjectGuid>{A72E9A1B-42E1-4D65-A65B-4B70847907DA}</ProjectGuid>
     <RootNamespace>AOSACA</RootNamespace>
     <Keyword>MFCProj</Keyword>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -30,14 +30,14 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -45,7 +45,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -53,7 +53,7 @@
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -73,6 +73,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -81,9 +82,11 @@
     <TargetName>$(ProjectName)D</TargetName>
     <IncludePath>$(WindowsSDK_IncludePath);$(VC_IncludePath);</IncludePath>
     <ExcludePath>$(WindowsSDK_IncludePath);$(VC_IncludePath);$(MSBuild_ExecutablePath);$(VC_LibraryPath_x64);</ExcludePath>
+    <OutDir>$(SolutionDir)\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -97,10 +100,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)OpenCV\include;$(SolutionDir)FreeImage;$(SolutionDir)Baumer\Inc;$(SolutionDir)Alpao\include;$(SolutionDir)OptiVec\include;$(SolutionDir)NetCom;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>ASDK.lib;FreeImage.lib;ovvc8.lib;ovvc14mdd.lib;ASDK.lib;Winmm.lib;vfw32.lib;bgapi2_genicam.lib;opencv_world410d.lib;opengl32.lib;glu32.lib;ntdll.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)OpenCV\lib\x86;$(SolutionDir)Baumer\lib\x86;$(SolutionDir)Optivec\lib\x86;$(WindowsSDKDir_81)lib\winv6.3\um\x86;$(SolutionDir)Alpao\lib\x86;$(SolutionDir)FreeImage</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -112,10 +118,7 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
-    <PostBuildEvent>
-      <Command>
-      </Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -123,15 +126,15 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\utils\freeimage;C:\Program Files\Optivec\include;C:\Program Files\Alpao\SDK\include;C:\Program Files\Baumer\Baumer GAPI SDK\Components\Dev\C++\Inc;C:\Program Files\opencv\build\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)FreeImage;$(SolutionDir)OpenCV\include;$(SolutionDir)Baumer\Inc;$(SolutionDir)Alpao\include;$(SolutionDir)OptiVec\include;$(SolutionDir)NetCom;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>ovvc64_8m.lib;ovvc14x64mdd.lib;ASDK.lib;Winmm.lib;vfw32.lib;bgapi2_genicam.lib;opencv_world320d.lib;opengl32.lib;glu32.lib;ntdll.lib</AdditionalDependencies>
+      <AdditionalDependencies>FreeImage.lib;ovvc64_8m.lib;ovvc14x64mdd.lib;ASDK.lib;Winmm.lib;vfw32.lib;bgapi2_genicam.lib;opencv_world410d.lib;opengl32.lib;glu32.lib;ntdll.lib</AdditionalDependencies>
       <DelayLoadDLLs>
       </DelayLoadDLLs>
-      <AdditionalLibraryDirectories>$(VC_LibraryPath_x64);C:\Program Files\Optivec\lib\x64;C:\Program Files\Alpao\SDK\lib\x64;$(WindowsSDK_LibraryPath_x64);C:\Program Files\Baumer\Baumer GAPI SDK\Components\Dev\C++\Lib\x64;C:\Program Files\opencv\build\x64\vc14\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(VC_LibraryPath_x64);$(SolutionDir)Alpao\Lib\x64;$(WindowsSDK_LibraryPath_x64);$(SolutionDir)Baumer\Lib\x64;$(SolutionDir)opencv\lib\x64;$(SolutionDir)\Optivec\lib\x64;$(SolutionDir)FreeImage</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -142,12 +145,7 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
-    <PostBuildEvent>
-      <Command>copy /y "%GENICAM_GENTL64_PATH%\bgapi2_genicam.dll" "$(TargetDir)"
-copy /y "%GENICAM_GENTL64_PATH%\MathParser.dll" "$(TargetDir)"
-copy /y "C:\Program Files\MATLAB\R2016a\bin\win64\vcomp100.dll" "$(TargetDir)"
-copy /y "C:\Program Files\opencv\build\x64\vc14\bin\opencv_world320d.dll" "$(TargetDir)"</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -157,12 +155,15 @@ copy /y "C:\Program Files\opencv\build\x64\vc14\bin\opencv_world320d.dll" "$(Tar
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)FreeImage;$(SolutionDir)OpenCV\include;$(SolutionDir)Baumer\Inc;$(SolutionDir)Alpao\include;$(SolutionDir)OptiVec\include;$(SolutionDir)NetCom;%(AdditionalIncludeDirectories);$(SolutionDir)OpenCV\include\opencv2</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>ASDK.lib;FreeImage.lib;ovvc8.lib;ovvc14mdr.lib;ASDK.lib;Winmm.lib;vfw32.lib;bgapi2_genicam.lib;opencv_world410.lib;opengl32.lib;glu32.lib;ntdll.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(WindowsSDKDir_81)lib\winv6.3\um\x86;$(SolutionDir)Alpao\lib\x86;$(SolutionDir)\FreeImage;$(SolutionDir)\OpenCV\lib\x86;$(SolutionDir)\Optivec\lib\x86;$(SolutionDir)\Baumer\lib\x86</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -183,7 +184,7 @@ copy /y "C:\Program Files\opencv\build\x64\vc14\bin\opencv_world320d.dll" "$(Tar
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\utils\freeimage;C:\Program Files\Optivec\include;C:\Program Files\Alpao\SDK\include;C:\Program Files\Baumer\Baumer GAPI SDK\Components\Dev\C++\Inc;C:\Program Files\opencv\build\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)opencv2;$(SolutionDir)FreeImage;$(SolutionDir)OpenCV\include;$(SolutionDir)Baumer\Inc;$(SolutionDir)Alpao\include;$(SolutionDir)OptiVec\include;$(SolutionDir)NetCom;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
     </ClCompile>
     <Link>
@@ -191,9 +192,9 @@ copy /y "C:\Program Files\opencv\build\x64\vc14\bin\opencv_world320d.dll" "$(Tar
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>ovvc64_8m.lib;ovvc14x64mdr.lib;ASDK.lib;Winmm.lib;vfw32.lib;bgapi2_genicam.lib;opencv_world320.lib;opengl32.lib;glu32.lib;ntdll.lib</AdditionalDependencies>
+      <AdditionalDependencies>ovvc64_8m.lib;ovvc14x64mdr.lib;ASDK.lib;Winmm.lib;vfw32.lib;bgapi2_genicam.lib;opencv_world410.lib;opengl32.lib;glu32.lib;ntdll.lib;FreeImage.lib</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>$(VC_LibraryPath_x64);C:\Program Files\Optivec\lib\x64;C:\Program Files\Alpao\SDK\lib\x64;$(WindowsSDK_LibraryPath_x64);C:\Program Files\Baumer\Baumer GAPI SDK\Components\Dev\C++\Lib\x64;C:\Program Files\opencv\build\x64\vc14\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(VC_LibraryPath_x64);$(SolutionDir)Alpao\Lib\x64;$(WindowsSDK_LibraryPath_x64);$(SolutionDir)Baumer\Lib\x64;$(SolutionDir)opencv\lib\x64;$(SolutionDir)\OptiVec\lib\x64;$(SolutionDir)FreeImage</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -204,12 +205,7 @@ copy /y "C:\Program Files\opencv\build\x64\vc14\bin\opencv_world320d.dll" "$(Tar
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
-    <PostBuildEvent>
-      <Command>copy /y "%GENICAM_GENTL64_PATH%\bgapi2_genicam.dll" "$(TargetDir)"
-copy /y "%GENICAM_GENTL64_PATH%\MathParser.dll" "$(TargetDir)"
-copy /y "C:\Program Files\MATLAB\R2016a\bin\win64\vcomp100.dll" "$(TargetDir)"
-copy /y "C:\Program Files\opencv\build\x64\vc14\bin\opencv_world320.dll" "$(TargetDir)"</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="hlp\AOSACA.hhc" />
@@ -314,6 +310,175 @@ echo.
     <None Include="utils\summercmap.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Baumer\Components\Dev\C++\Inc\bgapi2_def.h" />
+    <ClInclude Include="..\Baumer\Components\Dev\C++\Inc\bgapi2_featurenames.h" />
+    <ClInclude Include="..\Baumer\Components\Dev\C++\Inc\bgapi2_genicam.hpp" />
+    <ClInclude Include="..\NetCom\SockClient.h" />
+    <ClInclude Include="..\NetCom\socklistener.h" />
+    <ClInclude Include="..\NetCom\WinSock2Async.h" />
+    <ClInclude Include="..\Optivec\include\biMatObj.h" />
+    <ClInclude Include="..\Optivec\include\biVecObj.h" />
+    <ClInclude Include="..\Optivec\include\cdmath.h" />
+    <ClInclude Include="..\Optivec\include\cdMatObj.h" />
+    <ClInclude Include="..\Optivec\include\cdVecObj.h" />
+    <ClInclude Include="..\Optivec\include\cemath.H" />
+    <ClInclude Include="..\Optivec\include\ceMatObj.h" />
+    <ClInclude Include="..\Optivec\include\ceVecObj.h" />
+    <ClInclude Include="..\Optivec\include\cfmath.h" />
+    <ClInclude Include="..\Optivec\include\cfMatObj.h" />
+    <ClInclude Include="..\Optivec\include\cfVecObj.h" />
+    <ClInclude Include="..\Optivec\include\cmath.H" />
+    <ClInclude Include="..\Optivec\include\cudaMatAll.h" />
+    <ClInclude Include="..\Optivec\include\cudaMatLib.h" />
+    <ClInclude Include="..\Optivec\include\cudaMBIstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaMCDstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaMCFstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaMDstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaMFstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaMIstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaMLIstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaMQIstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaMSIstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaMUBstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaMUIstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaMULstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaMUQstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaMUSstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaMUstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaVBImath.h" />
+    <ClInclude Include="..\Optivec\include\cudaVBIstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaVCDmath.h" />
+    <ClInclude Include="..\Optivec\include\cudaVCDstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaVCFmath.h" />
+    <ClInclude Include="..\Optivec\include\cudaVCFstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaVDmath.h" />
+    <ClInclude Include="..\Optivec\include\cudaVDstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaVecAll.h" />
+    <ClInclude Include="..\Optivec\include\cudaVecLib.h" />
+    <ClInclude Include="..\Optivec\include\cudaVFmath.h" />
+    <ClInclude Include="..\Optivec\include\cudaVFstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaVFuncs.h" />
+    <ClInclude Include="..\Optivec\include\cudaVImath.h" />
+    <ClInclude Include="..\Optivec\include\cudaVIstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaVLImath.h" />
+    <ClInclude Include="..\Optivec\include\cudaVLIstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaVPDmath.h" />
+    <ClInclude Include="..\Optivec\include\cudaVPDstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaVPFmath.h" />
+    <ClInclude Include="..\Optivec\include\cudaVPFstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaVQImath.h" />
+    <ClInclude Include="..\Optivec\include\cudaVQIstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaVSImath.h" />
+    <ClInclude Include="..\Optivec\include\cudaVSIstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaVUBmath.h" />
+    <ClInclude Include="..\Optivec\include\cudaVUBstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaVUImath.h" />
+    <ClInclude Include="..\Optivec\include\cudaVUIstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaVULmath.h" />
+    <ClInclude Include="..\Optivec\include\cudaVULstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaVUmath.h" />
+    <ClInclude Include="..\Optivec\include\cudaVUQmath.h" />
+    <ClInclude Include="..\Optivec\include\cudaVUQstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaVUSmath.h" />
+    <ClInclude Include="..\Optivec\include\cudaVUSstd.h" />
+    <ClInclude Include="..\Optivec\include\cudaVUstd.h" />
+    <ClInclude Include="..\Optivec\include\dMatObj.h" />
+    <ClInclude Include="..\Optivec\include\dVecObj.h" />
+    <ClInclude Include="..\Optivec\include\eMatObj.h" />
+    <ClInclude Include="..\Optivec\include\eVecObj.h" />
+    <ClInclude Include="..\Optivec\include\fMatObj.h" />
+    <ClInclude Include="..\Optivec\include\fVecObj.h" />
+    <ClInclude Include="..\Optivec\include\iMatObj.h" />
+    <ClInclude Include="..\Optivec\include\iVecObj.h" />
+    <ClInclude Include="..\Optivec\include\liMatObj.h" />
+    <ClInclude Include="..\Optivec\include\liVecObj.h" />
+    <ClInclude Include="..\Optivec\include\MATALL.H" />
+    <ClInclude Include="..\Optivec\include\MatLib.h" />
+    <ClInclude Include="..\Optivec\include\MBIstd.h" />
+    <ClInclude Include="..\Optivec\include\MCDstd.h" />
+    <ClInclude Include="..\Optivec\include\MCEstd.h" />
+    <ClInclude Include="..\Optivec\include\MCFstd.H" />
+    <ClInclude Include="..\Optivec\include\MDstd.h" />
+    <ClInclude Include="..\Optivec\include\MEstd.H" />
+    <ClInclude Include="..\Optivec\include\MFstd.h" />
+    <ClInclude Include="..\Optivec\include\Mgraph.H" />
+    <ClInclude Include="..\Optivec\include\MIstd.H" />
+    <ClInclude Include="..\Optivec\include\MLIstd.H" />
+    <ClInclude Include="..\Optivec\include\MQIstd.H" />
+    <ClInclude Include="..\Optivec\include\MSIstd.H" />
+    <ClInclude Include="..\Optivec\include\MUBstd.H" />
+    <ClInclude Include="..\Optivec\include\MUIstd.h" />
+    <ClInclude Include="..\Optivec\include\MULstd.H" />
+    <ClInclude Include="..\Optivec\include\MUQstd.H" />
+    <ClInclude Include="..\Optivec\include\MUSstd.H" />
+    <ClInclude Include="..\Optivec\include\MUstd.h" />
+    <ClInclude Include="..\Optivec\include\newcplx.h" />
+    <ClInclude Include="..\Optivec\include\OptiVec.h" />
+    <ClInclude Include="..\Optivec\include\ovxmath.h" />
+    <ClInclude Include="..\Optivec\include\pdVecObj.h" />
+    <ClInclude Include="..\Optivec\include\peVecObj.h" />
+    <ClInclude Include="..\Optivec\include\pfVecObj.h" />
+    <ClInclude Include="..\Optivec\include\qiMatObj.h" />
+    <ClInclude Include="..\Optivec\include\qiVecObj.h" />
+    <ClInclude Include="..\Optivec\include\siMatObj.h" />
+    <ClInclude Include="..\Optivec\include\siVecObj.h" />
+    <ClInclude Include="..\Optivec\include\ubMatObj.h" />
+    <ClInclude Include="..\Optivec\include\ubVecObj.h" />
+    <ClInclude Include="..\Optivec\include\uiMatObj.h" />
+    <ClInclude Include="..\Optivec\include\uiVecObj.h" />
+    <ClInclude Include="..\Optivec\include\ulMatObj.h" />
+    <ClInclude Include="..\Optivec\include\ulVecObj.h" />
+    <ClInclude Include="..\Optivec\include\uMatObj.h" />
+    <ClInclude Include="..\Optivec\include\uqMatObj.h" />
+    <ClInclude Include="..\Optivec\include\uqVecObj.h" />
+    <ClInclude Include="..\Optivec\include\usMatObj.h" />
+    <ClInclude Include="..\Optivec\include\usVecObj.h" />
+    <ClInclude Include="..\Optivec\include\uVecObj.h" />
+    <ClInclude Include="..\Optivec\include\VBImath.H" />
+    <ClInclude Include="..\Optivec\include\VBIstd.H" />
+    <ClInclude Include="..\Optivec\include\VCDmath.H" />
+    <ClInclude Include="..\Optivec\include\VCDstd.H" />
+    <ClInclude Include="..\Optivec\include\VCEmath.H" />
+    <ClInclude Include="..\Optivec\include\VCEstd.H" />
+    <ClInclude Include="..\Optivec\include\VCFmath.h" />
+    <ClInclude Include="..\Optivec\include\VCFstd.H" />
+    <ClInclude Include="..\Optivec\include\VDmath.H" />
+    <ClInclude Include="..\Optivec\include\VDstd.H" />
+    <ClInclude Include="..\Optivec\include\VecAll.H" />
+    <ClInclude Include="..\Optivec\include\VecLib.h" />
+    <ClInclude Include="..\Optivec\include\VecObj.h" />
+    <ClInclude Include="..\Optivec\include\VEmath.H" />
+    <ClInclude Include="..\Optivec\include\VEstd.H" />
+    <ClInclude Include="..\Optivec\include\VFmath.h" />
+    <ClInclude Include="..\Optivec\include\VFstd.h" />
+    <ClInclude Include="..\Optivec\include\Vgraph.H" />
+    <ClInclude Include="..\Optivec\include\VImath.H" />
+    <ClInclude Include="..\Optivec\include\VIstd.H" />
+    <ClInclude Include="..\Optivec\include\VLImath.H" />
+    <ClInclude Include="..\Optivec\include\VLIstd.H" />
+    <ClInclude Include="..\Optivec\include\VPDmath.H" />
+    <ClInclude Include="..\Optivec\include\VPDstd.H" />
+    <ClInclude Include="..\Optivec\include\VPEmath.H" />
+    <ClInclude Include="..\Optivec\include\VPEstd.H" />
+    <ClInclude Include="..\Optivec\include\VPFmath.H" />
+    <ClInclude Include="..\Optivec\include\VPFstd.H" />
+    <ClInclude Include="..\Optivec\include\VQImath.H" />
+    <ClInclude Include="..\Optivec\include\VQIstd.H" />
+    <ClInclude Include="..\Optivec\include\VSImath.H" />
+    <ClInclude Include="..\Optivec\include\VSIstd.H" />
+    <ClInclude Include="..\Optivec\include\VUBmath.H" />
+    <ClInclude Include="..\Optivec\include\VUBstd.H" />
+    <ClInclude Include="..\Optivec\include\VUImath.H" />
+    <ClInclude Include="..\Optivec\include\VUIstd.H" />
+    <ClInclude Include="..\Optivec\include\VULmath.H" />
+    <ClInclude Include="..\Optivec\include\VULstd.H" />
+    <ClInclude Include="..\Optivec\include\VUmath.H" />
+    <ClInclude Include="..\Optivec\include\VUQmath.H" />
+    <ClInclude Include="..\Optivec\include\VUQstd.h" />
+    <ClInclude Include="..\Optivec\include\VUSmath.H" />
+    <ClInclude Include="..\Optivec\include\VUSstd.H" />
+    <ClInclude Include="..\Optivec\include\VUstd.h" />
+    <ClInclude Include="..\Optivec\include\xmath.H" />
     <ClInclude Include="AOSACA.h" />
     <ClInclude Include="AOSACADlg.h" />
     <ClInclude Include="AOSACAParams.h" />
@@ -333,9 +498,6 @@ echo.
     <ClInclude Include="RTPlotDlg.h" />
     <ClInclude Include="SVMapDlg.h" />
     <ClInclude Include="ThreadClass.h" />
-    <ClInclude Include="utils\netcomm\SockClient.h" />
-    <ClInclude Include="utils\netcomm\SockListener.h" />
-    <ClInclude Include="utils\netcomm\WinSock2Async.h" />
     <ClInclude Include="WFMapDlg.h" />
     <ClInclude Include="WFSImageDlg.h" />
     <CustomBuild Include="Resource.h">
@@ -420,6 +582,24 @@ makehm /h /a afxhh.h IDW_,HIDW_,0x50000 "%(FullPath)" &gt;&gt; "hlp\HTMLDefines.
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\NetCom\SockClient.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\NetCom\SockListener.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\NetCom\WinSock2Async.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="AOSACA.cpp" />
     <ClCompile Include="AOSACADlg.cpp" />
     <ClCompile Include="AOSACAParamsDlg.cpp" />
@@ -444,18 +624,6 @@ makehm /h /a afxhh.h IDW_,HIDW_,0x50000 "%(FullPath)" &gt;&gt; "hlp\HTMLDefines.
     </ClCompile>
     <ClCompile Include="SVMapDlg.cpp" />
     <ClCompile Include="ThreadClass.cpp" />
-    <ClCompile Include="utils\netcomm\SockClient.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="utils\netcomm\SockListener.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="utils\netcomm\WinSock2Async.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="WFMapDlg.cpp" />
     <ClCompile Include="WFSImageDlg.cpp" />
   </ItemGroup>

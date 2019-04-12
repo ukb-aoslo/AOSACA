@@ -5,11 +5,10 @@
 #include "AOSACA.h"
 #include "PupilView.h"
 #include "afxdialogex.h"
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui.hpp"
+#include "opencv2/imgproc.hpp"
 #include <Vfw.h>
 #include <vector>
-
 
 extern AOSACAParams*g_AOSACAParams;
 // CPupilView dialog
@@ -94,7 +93,7 @@ LRESULT PASCAL FrameCallbackProc(HWND hWnd, LPVIDEOHDR lpVHdr)
 	cv::mixChannels(input, 1, &single, 1, from_to, 1);
 	GaussianBlur(single, single, cv::Size(9,9), 2, 2);
 	std::vector<cv::Vec3f> circles;
-	HoughCircles(single, circles, CV_HOUGH_GRADIENT, 1, single.rows / 8, 200, 100, 0, 0);
+	HoughCircles(single, circles, cv::HOUGH_GRADIENT, 1, single.rows / 8, 200, 100, 0, 0);
 	memcpy(lpVHdr->lpData, input->data, lpVHdr->dwBytesUsed);
 
 	return (LRESULT)TRUE;

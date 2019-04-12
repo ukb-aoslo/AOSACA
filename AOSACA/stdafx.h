@@ -38,7 +38,7 @@
 
 //#include <afxsock.h>            // MFC socket extensions
 #include <WinSock2.h>			// use netcomm instead of mfc sockets
-#include "utils/netcomm/Winsock2Async.h"
+#include "../NetCom/Winsock2Async.h"
 
 extern HWND    ghDlg;          // Handle to main dialog box.
 extern HACCEL  ghAccelTable;   // Handle to accelerator table.

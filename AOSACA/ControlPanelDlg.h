@@ -2,7 +2,7 @@
 
 #include "MyEditCtrl.h"
 #include "afxwin.h"
-#include "utils/netcomm/SockListener.h"
+#include "..\NetCom\socklistener.h"
 
 #define MAX_SAVE_LENGTH_SECS	120
 

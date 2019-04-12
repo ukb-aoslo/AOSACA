@@ -21,8 +21,14 @@
       <UniqueIdentifier>{af80116b-bfe7-4fc1-8792-8316b7116dfa}</UniqueIdentifier>
       <Extensions>htm;html</Extensions>
     </Filter>
-    <Filter Include="Header Files\netcomm">
-      <UniqueIdentifier>{2fd71f98-1118-4596-8603-82f036d7b080}</UniqueIdentifier>
+    <Filter Include="NetCom">
+      <UniqueIdentifier>{bd9aaae5-a870-49bb-b525-1eba408eaf41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OptiVec">
+      <UniqueIdentifier>{b5203fbc-c808-4ab3-b56f-d5fb6402e15d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{6e7713ec-84dc-4523-8d9c-d1d7616db9a0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -224,14 +230,512 @@
     <ClInclude Include="OpenGLControl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utils\netcomm\SockListener.h">
-      <Filter>Header Files\netcomm</Filter>
+    <ClInclude Include="..\NetCom\WinSock2Async.h">
+      <Filter>NetCom</Filter>
     </ClInclude>
-    <ClInclude Include="utils\netcomm\WinSock2Async.h">
-      <Filter>Header Files\netcomm</Filter>
+    <ClInclude Include="..\NetCom\socklistener.h">
+      <Filter>NetCom</Filter>
     </ClInclude>
-    <ClInclude Include="utils\netcomm\SockClient.h">
-      <Filter>Header Files\netcomm</Filter>
+    <ClInclude Include="..\NetCom\SockClient.h">
+      <Filter>NetCom</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\biMatObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\biVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cdmath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cdMatObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cdVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cemath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\ceMatObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\ceVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cfmath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cfMatObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cfVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cmath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaMatAll.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaMatLib.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaMBIstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaMCDstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaMCFstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaMDstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaMFstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaMIstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaMLIstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaMQIstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaMSIstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaMUBstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaMUIstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaMULstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaMUQstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaMUSstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaMUstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVBImath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVBIstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVCDmath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVCDstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVCFmath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVCFstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVDmath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVDstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVecAll.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVecLib.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVFmath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVFstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVFuncs.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVImath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVIstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVLImath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVLIstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVPDmath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVPDstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVPFmath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVPFstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVQImath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVQIstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVSImath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVSIstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVUBmath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVUBstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVUImath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVUIstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVULmath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVULstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVUmath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVUQmath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVUQstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVUSmath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVUSstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\cudaVUstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\dMatObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\dVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\eMatObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\eVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\fMatObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\fVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\iMatObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\iVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\liMatObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\liVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\MATALL.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\MatLib.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\MBIstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\MCDstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\MCEstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\MCFstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\MDstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\MEstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\MFstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\Mgraph.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\MIstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\MLIstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\MQIstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\MSIstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\MUBstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\MUIstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\MULstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\MUQstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\MUSstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\MUstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\newcplx.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\OptiVec.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\ovxmath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\pdVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\peVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\pfVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\qiMatObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\qiVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\siMatObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\siVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\ubMatObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\ubVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\uiMatObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\uiVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\ulMatObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\ulVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\uMatObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\uqMatObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\uqVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\usMatObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\usVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\uVecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VBImath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VBIstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VCDmath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VCDstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VCEmath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VCEstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VCFmath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VCFstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VDmath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VDstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VecAll.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VecLib.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VecObj.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VEmath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VEstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VFmath.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VFstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\Vgraph.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VImath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VIstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VLImath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VLIstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VPDmath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VPDstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VPEmath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VPEstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VPFmath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VPFstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VQImath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VQIstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VSImath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VSIstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VUBmath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VUBstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VUImath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VUIstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VULmath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VULstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VUmath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VUQmath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VUQstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VUSmath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VUSstd.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\VUstd.h">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Optivec\include\xmath.H">
+      <Filter>OptiVec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Baumer\Components\Dev\C++\Inc\bgapi2_def.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Baumer\Components\Dev\C++\Inc\bgapi2_featurenames.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Baumer\Components\Dev\C++\Inc\bgapi2_genicam.hpp">
+      <Filter>Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -298,14 +802,14 @@
     <ClCompile Include="OpenGLControl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="utils\netcomm\SockListener.cpp">
-      <Filter>Header Files\netcomm</Filter>
+    <ClCompile Include="..\NetCom\WinSock2Async.cpp">
+      <Filter>NetCom</Filter>
     </ClCompile>
-    <ClCompile Include="utils\netcomm\WinSock2Async.cpp">
-      <Filter>Header Files\netcomm</Filter>
+    <ClCompile Include="..\NetCom\SockListener.cpp">
+      <Filter>NetCom</Filter>
     </ClCompile>
-    <ClCompile Include="utils\netcomm\SockClient.cpp">
-      <Filter>Header Files\netcomm</Filter>
+    <ClCompile Include="..\NetCom\SockClient.cpp">
+      <Filter>NetCom</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
