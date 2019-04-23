@@ -42,7 +42,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
     <PlatformToolset>v141</PlatformToolset>
@@ -73,26 +73,33 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)$(PlatformShortName)\$(Configuration)\</OutDir>
+    <IntDir>$(PlatformShortName)\$(Configuration)\</IntDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>
     </LibraryPath>
     <TargetName>$(ProjectName)D</TargetName>
-    <IncludePath>$(WindowsSDK_IncludePath);$(VC_IncludePath);</IncludePath>
+    <IncludePath>$(WindowsSDK_IncludePath);$(VC_IncludePath);$(ProjectDir)$(ProjectDir)</IncludePath>
     <ExcludePath>$(WindowsSDK_IncludePath);$(VC_IncludePath);$(MSBuild_ExecutablePath);$(VC_LibraryPath_x64);</ExcludePath>
-    <OutDir>$(SolutionDir)\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)$(PlatformShortName)\$(Configuration)\</OutDir>
+    <IntDir>$(PlatformShortName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)$(PlatformShortName)\$(Configuration)\</OutDir>
+    <IntDir>$(PlatformShortName)\$(Configuration)\</IntDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
+    <IncludePath>$(WindowsSDK_IncludePath);$(IncludePath)$(ProjectDir)</IncludePath>
     <LibraryPath>
     </LibraryPath>
+    <OutDir>$(SolutionDir)$(PlatformShortName)\$(Configuration)\</OutDir>
+    <IntDir>$(PlatformShortName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -100,7 +107,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)OpenCV\include;$(SolutionDir)FreeImage;$(SolutionDir)Baumer\Inc;$(SolutionDir)Alpao\include;$(SolutionDir)OptiVec\include;$(SolutionDir)NetCom;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)OpenCV\include;$(SolutionDir)FreeImage;$(SolutionDir)Baumer\Inc;$(SolutionDir)Alpao\include;$(SolutionDir)OptiVec\include;$(SolutionDir)NetCom</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -119,6 +126,12 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent />
+    <PostBuildEvent>
+      <Command>copy $(SolutionDir)FreeImage\FreeImage.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
+copy $(SolutionDir)Alpao\lib\$(PlatformShortName)\ASDK.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
+copy $(SolutionDir)Baumer\bin\$(PlatformShortName)\bgapi2_genicam.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
+copy $(SolutionDir)Baumer\bin\$(PlatformShortName)\MathParser.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -126,7 +139,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)FreeImage;$(SolutionDir)OpenCV\include;$(SolutionDir)Baumer\Inc;$(SolutionDir)Alpao\include;$(SolutionDir)OptiVec\include;$(SolutionDir)NetCom;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)FreeImage;$(SolutionDir)OpenCV\include;$(SolutionDir)Baumer\Inc;$(SolutionDir)Alpao\include;$(SolutionDir)OptiVec\include;$(SolutionDir)NetCom;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -146,6 +159,13 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent />
+    <PostBuildEvent>
+      <Command>copy $(SolutionDir)FreeImage\FreeImage.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
+copy $(SolutionDir)Alpao\lib\$(PlatformShortName)\ASDK.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
+copy $(SolutionDir)Baumer\bin\$(PlatformShortName)\bgapi2_genicam.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
+copy $(SolutionDir)Baumer\bin\$(PlatformShortName)\MathParser.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
+copy $(SolutionDir)OpenCV\bin\$(PlatformShortName)\opencv_world410d.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -155,7 +175,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)FreeImage;$(SolutionDir)OpenCV\include;$(SolutionDir)Baumer\Inc;$(SolutionDir)Alpao\include;$(SolutionDir)OptiVec\include;$(SolutionDir)NetCom;%(AdditionalIncludeDirectories);$(SolutionDir)OpenCV\include\opencv2</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)FreeImage;$(SolutionDir)OpenCV\include;$(SolutionDir)Baumer\Inc;$(SolutionDir)Alpao\include;$(SolutionDir)OptiVec\include;$(SolutionDir)NetCom;$(SolutionDir)OpenCV\include\opencv2</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -175,6 +195,12 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>copy $(SolutionDir)FreeImage\FreeImage.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
+copy $(SolutionDir)Alpao\lib\$(PlatformShortName)\ASDK.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
+copy $(SolutionDir)Baumer\bin\$(PlatformShortName)\bgapi2_genicam.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
+copy $(SolutionDir)Baumer\bin\$(PlatformShortName)\MathParser.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -184,7 +210,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)opencv2;$(SolutionDir)FreeImage;$(SolutionDir)OpenCV\include;$(SolutionDir)Baumer\Inc;$(SolutionDir)Alpao\include;$(SolutionDir)OptiVec\include;$(SolutionDir)NetCom;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)opencv2;$(SolutionDir)FreeImage;$(SolutionDir)OpenCV\include;$(SolutionDir)Baumer\Inc;$(SolutionDir)Alpao\include;$(SolutionDir)OptiVec\include;$(SolutionDir)NetCom;</AdditionalIncludeDirectories>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
     </ClCompile>
     <Link>
@@ -206,6 +232,13 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent />
+    <PostBuildEvent>
+      <Command>copy $(SolutionDir)FreeImage\FreeImage.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
+copy $(SolutionDir)Alpao\lib\$(PlatformShortName)\ASDK.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
+copy $(SolutionDir)Baumer\bin\$(PlatformShortName)\bgapi2_genicam.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
+copy $(SolutionDir)Baumer\bin\$(PlatformShortName)\MathParser.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
+copy $(SolutionDir)OpenCV\bin\$(PlatformShortName)\opencv_world410.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="hlp\AOSACA.hhc" />

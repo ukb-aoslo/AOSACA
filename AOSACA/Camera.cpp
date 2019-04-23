@@ -6,6 +6,7 @@
 #include <iomanip>
 #include "FreeImage.h"
 
+
 //#pragma comment(lib, "delayimp")
 //#pragma comment(lib, "\\FreeImage\\FreeImage")
 
@@ -36,11 +37,12 @@ CCamera::CCamera(CAOSACADlg *parent)
 		m_pInterface->Open();
 	}
 
-	catch (exception)
+	catch (BGAPI2::Exceptions::IException& ex)
 	{
 		g_AOSACAParams->g_stAppErrBuff = "No connection to camera!\n\nCheck network configuration (incl. firewall settings) and close any other active camera applications.";
 		g_AOSACAParams->ShowError(MB_ICONERROR);
 		BGAPI2::SystemList::ReleaseInstance();
+		m_pInterface = NULL;
 	}
 			
 	if (g_AOSACAParams->g_bCamReady = Camera_Initialization())	
@@ -60,11 +62,10 @@ CCamera::~CCamera(void)
 {
 	if (g_AOSACAParams->g_bCamReady)
 	{
-		if (g_AOSACAParams->g_frame_mode == LIVESHOW) 
-			ResetEvent(g_AOSACAParams->g_ehCamLive);			
-		SetEvent(m_ehCamThreadClose);	
-		::WaitForSingleObject(m_ehCamThreadShutdown, g_AOSACAParams->EXPOSURE_MS*2);				
-
+		if (g_AOSACAParams->g_frame_mode == LIVESHOW)
+			ResetEvent(g_AOSACAParams->g_ehCamLive);
+		SetEvent(m_ehCamThreadClose);
+		::WaitForSingleObject(m_ehCamThreadShutdown, g_AOSACAParams->EXPOSURE_MS * 2);
 
 		// Stop capturing images
 		//m_pDevice->GetRemoteNode("AcquisitionStop")->Execute();
@@ -73,7 +74,14 @@ CCamera::~CCamera(void)
 		m_pInterface->Close();
 		m_pSystem->Close();
 		BGAPI2::SystemList::ReleaseInstance();
-		
+
+		CloseHandle(g_AOSACAParams->g_ehCamNewFrame);
+		CloseHandle(g_AOSACAParams->g_ehCamSnap);
+		CloseHandle(m_ehCamThreadClose);
+		CloseHandle(m_ehCamThreadShutdown);
+
+	}
+
 		if (g_AOSACAParams->g_pImgBuffPrc)
 			g_AOSACAParams->g_pImgBuffPrc = NULL;
 		if (m_pImgBuff != NULL)
@@ -81,18 +89,15 @@ CCamera::~CCamera(void)
 		if (m_pBkgndBuff != NULL)
 			delete [] m_pBkgndBuff;
 
-		CloseHandle(g_AOSACAParams->g_ehCamNewFrame);
-		CloseHandle(g_AOSACAParams->g_ehCamSnap);
-		CloseHandle(m_ehCamThreadClose);
-		CloseHandle(m_ehCamThreadShutdown);
-	}
-	g_AOSACAParams->g_bCamReady = false;	
+	g_AOSACAParams->g_bCamReady = false;
+
 }
 
 bool CCamera::Camera_Initialization()
 {
-
 	//load camera  
+	if (!m_pInterface)
+		return false;
 	m_pDeviceList = m_pInterface->GetDevices();
 	m_pDeviceList->Refresh(100);
 

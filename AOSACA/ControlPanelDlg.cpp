@@ -52,8 +52,8 @@ CControlPanelDlg::CControlPanelDlg(CWnd* pParent /*=NULL*/)
 
 CControlPanelDlg::~CControlPanelDlg()
 {
-	delete m_pListener_AO;
 	CloseHandle(m_eNetMsg[0]);
+	delete m_pListener_AO;
 	delete m_eNetMsg;
 	OnClose();
 }

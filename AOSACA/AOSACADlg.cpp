@@ -202,9 +202,9 @@ BOOL CAOSACADlg::OnInitDialog()
 	if (!g_AOSACAParams->g_bCamReady)
 	{		
 		g_AOSACAParams->g_stAppErrBuff.Empty();
-		g_AOSACAParams->g_stAppErrBuff = "Camera/Framegrabber not connected/detected, Application will exit";
+		g_AOSACAParams->g_stAppErrBuff = "Camera/Framegrabber not connected/detected";
 		g_AOSACAParams->ShowError(MB_ICONINFORMATION);
-		OnClose();
+
 	}
 
 	//Create DM object
@@ -423,16 +423,46 @@ void CAOSACADlg::OnClose()
 		g_dmaothread->ExitInstance();
 	}
 	delete g_dmaothread;
-	if(g_controlpanel) delete g_controlpanel;
-	if(g_wfsimg) delete g_wfsimg;
-	if(g_dmmap) delete g_dmmap;
-	if(g_psfmap) delete g_psfmap;
-	if(g_wfmap) delete g_wfmap;
-	if(g_svmap) delete g_svmap;
-	if(g_pupilview) delete g_pupilview;
-	if(g_rtplot) delete g_rtplot;
-	if(g_optcalc) delete g_optcalc;	
-	if(g_camera) delete g_camera;
+	if (g_controlpanel) {
+		g_controlpanel->DestroyWindow();
+		delete g_controlpanel;
+	}
+	if (g_wfsimg) {
+		g_wfsimg->DestroyWindow();
+		delete g_wfsimg;
+	}
+	if (g_dmmap) {
+		g_dmmap->DestroyWindow();
+		delete g_dmmap;
+	}
+	if (g_psfmap) {
+		g_psfmap->DestroyWindow();
+		delete g_psfmap;
+	}
+	if (g_wfmap) {
+		g_wfmap->DestroyWindow();
+		delete g_wfmap;
+	}
+	if (g_svmap) {
+		g_svmap->DestroyWindow();
+		delete g_svmap;
+	}
+	if (g_pupilview) {
+		g_pupilview->DestroyWindow();
+		delete g_pupilview;
+
+	}
+	if (g_rtplot) {
+		g_rtplot->DestroyWindow();
+		delete g_rtplot;
+	}
+	if (g_optcalc) {
+		delete g_optcalc;	
+	}
+	if(g_camera){
+		delete g_camera;
+	}
+
 	if(g_AOSACAParams->g_bNewPmat)
 	{
 		g_AOSACAParams->g_stAppErrBuff.Empty();

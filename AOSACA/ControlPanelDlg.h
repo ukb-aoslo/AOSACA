@@ -36,6 +36,7 @@ private:
 	
 	// Netcomm listener for remote control
 	CSockListener* m_pListener_AO;
+
 	HANDLE*		m_eNetMsg;
 	CString*	m_strNetRecBuff;
 	HANDLE		thd_handle;
