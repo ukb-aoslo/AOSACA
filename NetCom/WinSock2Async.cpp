@@ -584,6 +584,7 @@ int CWinSock2Async::Send( char* pchBuff, int nLen, int nFlags )
 	int nNoSent = send( m_Sd, pchBuff, nLen, nFlags );
 	LeaveCriticalSection( &m_csSend );
 	return nNoSent;
+
 }
 
 

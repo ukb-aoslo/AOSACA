@@ -18,6 +18,7 @@ IMPLEMENT_DYNAMIC(CControlPanelDlg, CDialogEx)
 CControlPanelDlg::CControlPanelDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CControlPanelDlg::IDD, pParent)
 {	
+	
 	m_pParent=(CAOSACADlg *)pParent;
 	m_bCPenalizeTilt = FALSE;
 	m_bCRenewPmat = FALSE;
@@ -38,10 +39,10 @@ CControlPanelDlg::CControlPanelDlg(CWnd* pParent /*=NULL*/)
 	}
 
 	m_pListener_AO = new CSockListener(&m_strNetRecBuff[0], &m_eNetMsg[0]);
-	if (!m_pListener_AO->InitPort(L"192.168.0.1", 1500)) {
+	if (!m_pListener_AO->Create()) {
 		AfxMessageBox(L"Unable to open port 1500 for IGUIDE Communication.", MB_OK | MB_ICONERROR, 0);
 	}
-	else if (!m_pListener_AO->Listen()) {
+	if (!m_pListener_AO->Listen()) {
 		AfxMessageBox(L"Unable to listen on port 1500 for IGUIDE Communication.", MB_OK | MB_ICONERROR, 0);
 	}
 	
@@ -389,6 +390,7 @@ void CControlPanelDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar
 		case IDS_CONTROL_DEFOCUS_FIXEDDEF:			
 			m_FixedDefocusValue=m_eFixedDef.UpdateValue(direction, m_DefocusStepSize);
 			send_DM_update_Defocus(m_FixedDefocusValue);
+			TransmitDefocus();
 			break;		
 		}
 	}
@@ -998,6 +1000,7 @@ BOOL CControlPanelDlg::PreTranslateMessage(MSG* pMsg)
 					GetDlgItemText(IDE_CONTROL_DEFOCUS_FIXEDDEF,text);
 					m_FixedDefocusValue = _ttof(text);
 					send_DM_update_Defocus(m_FixedDefocusValue);
+					TransmitDefocus();
 				}
 				else if (pWnd == &m_eDefStep)
 				{
@@ -1093,6 +1096,7 @@ void CControlPanelDlg::SubBkgnd()
 
 void CControlPanelDlg::Update_Defocus(BOOL direction)
 {
+
 	if (m_bFlags[20] == true) {	// only do this when loop has been closed for once
 		CString text;
 		GetDlgItemText(IDE_CONTROL_DEFOCUS_STEPSIZE, text);
@@ -1105,8 +1109,24 @@ void CControlPanelDlg::Update_Defocus(BOOL direction)
 		text.Format(_T("%2.3f"), m_FixedDefocusValue);
 		SetDlgItemText(IDE_CONTROL_DEFOCUS_FIXEDDEF, text);
 		send_DM_update_Defocus(m_FixedDefocusValue);
+		
+		// Send to IGUIDE
+		TransmitDefocus();
+		
 	}
+
 }
+
+void CControlPanelDlg::TransmitDefocus() {
+
+	char data[50];
+	sprintf(data, "AOSACA_DEFOCUS#%2.3f", m_FixedDefocusValue);
+
+	m_pListener_AO->Send(data, 50, 0);
+
+
+}
+
 
 void CControlPanelDlg::Reset_Defocus() {
 
@@ -1118,6 +1138,10 @@ void CControlPanelDlg::Reset_Defocus() {
 		text.Format(_T("%2.3f"), m_FixedDefocusValue);
 		SetDlgItemText(IDE_CONTROL_DEFOCUS_FIXEDDEF, text);
 		send_DM_update_Defocus(m_FixedDefocusValue);
+
+		// Send to IGUIDE
+		TransmitDefocus();
+
 	}
 }
 

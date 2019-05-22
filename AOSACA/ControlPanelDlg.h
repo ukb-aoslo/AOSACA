@@ -98,6 +98,8 @@ public:
 	void	SubbkgndButton();
 	void	CentroidsButton();
 	void	OptPerfButton();
+
+	void TransmitDefocus(); // send defocus value to IGUIDE
 	
 	HANDLE		m_ehUpdateDialog;
 	bool		*m_bFlags;	

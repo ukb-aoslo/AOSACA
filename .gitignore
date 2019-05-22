@@ -1,6 +1,7 @@
 ## custom ignore options
 AOSACA/utils/PMats/
-background*.*
+AOSACA/background*.*
+AOSACA/AOSACA.ini
 *.dll
 *.lib
 *.chm

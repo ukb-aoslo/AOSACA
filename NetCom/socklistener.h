@@ -19,9 +19,9 @@ class CSockListener : public CWinSock2Async
 public:
 	CSockListener(CString*, HANDLE*);
 	virtual ~CSockListener();
-	bool InitPort(LPCTSTR sAddress = L"127.0.0.1", int PortID = 0);
 	CString* netbuff;
 	HANDLE* eID;
+	virtual int	Send(char* pchBuff, int nLen, int nFlags = 0);
 	
 //Event handlers
 private:

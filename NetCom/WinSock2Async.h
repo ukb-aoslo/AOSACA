@@ -33,7 +33,7 @@ public:
 	~CWinSock2Async();
 	void	ThreadRunner();							//NEVER CALL THIS
 
-	bool	Create( LPCTSTR sAddress = L"127.0.0.1", int nPort = 0 );
+	bool	Create( LPCTSTR sAddress = L"127.0.0.1", int nPort = 1500 );
 	bool	Connect( LPCTSTR sAddress, int nPort );
     bool    Listen( int nConnectionBacklog = 5 );
 	bool	Accept( CWinSock2Async *pSockNew, sockaddr* pSockAddr = NULL, int* pnLen = NULL );

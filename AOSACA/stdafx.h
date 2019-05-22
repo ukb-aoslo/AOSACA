@@ -37,7 +37,7 @@
 
 
 //#include <afxsock.h>            // MFC socket extensions
-#include <WinSock2.h>			// use netcomm instead of mfc sockets
+#include <WinSock2.h>			// use netcom instead of mfc sockets
 #include "../NetCom/Winsock2Async.h"
 
 extern HWND    ghDlg;          // Handle to main dialog box.

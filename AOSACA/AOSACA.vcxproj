@@ -82,7 +82,7 @@
     <LibraryPath>
     </LibraryPath>
     <TargetName>$(ProjectName)D</TargetName>
-    <IncludePath>$(WindowsSDK_IncludePath);$(VC_IncludePath);$(ProjectDir)$(ProjectDir)</IncludePath>
+    <IncludePath>$(WindowsSDK_IncludePath);$(VC_IncludePath);$(ProjectDir)</IncludePath>
     <ExcludePath>$(WindowsSDK_IncludePath);$(VC_IncludePath);$(MSBuild_ExecutablePath);$(VC_LibraryPath_x64);</ExcludePath>
     <OutDir>$(SolutionDir)$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>$(PlatformShortName)\$(Configuration)\</IntDir>
@@ -95,7 +95,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(WindowsSDK_IncludePath);$(IncludePath)$(ProjectDir)</IncludePath>
+    <IncludePath>$(WindowsSDK_IncludePath);$(IncludePath);$(ProjectDir)</IncludePath>
     <LibraryPath>
     </LibraryPath>
     <OutDir>$(SolutionDir)$(PlatformShortName)\$(Configuration)\</OutDir>
@@ -160,11 +160,12 @@ copy $(SolutionDir)Baumer\bin\$(PlatformShortName)\MathParser.dll $(SolutionDir)
     </ResourceCompile>
     <PostBuildEvent />
     <PostBuildEvent>
-      <Command>copy $(SolutionDir)FreeImage\FreeImage.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
-copy $(SolutionDir)Alpao\lib\$(PlatformShortName)\ASDK.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
-copy $(SolutionDir)Baumer\bin\$(PlatformShortName)\bgapi2_genicam.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
-copy $(SolutionDir)Baumer\bin\$(PlatformShortName)\MathParser.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
-copy $(SolutionDir)OpenCV\bin\$(PlatformShortName)\opencv_world410d.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\</Command>
+      <Command>copy "$(SolutionDir)FreeImage\FreeImage.dll" "$(SolutionDir)$(PlatformShortName)\$(Configuration)\"
+copy "$(SolutionDir)FreeImage\vcomp100.dll" "$(SolutionDir)$(PlatformShortName)\$(Configuration)\"
+copy "$(SolutionDir)Alpao\lib\$(PlatformShortName)\ASDK.dll" "$(SolutionDir)$(PlatformShortName)\$(Configuration)\"
+copy "$(SolutionDir)Baumer\bin\$(PlatformShortName)\bgapi2_genicam.dll" "$(SolutionDir)$(PlatformShortName)\$(Configuration)\"
+copy "$(SolutionDir)Baumer\bin\$(PlatformShortName)\MathParser.dll" "$(SolutionDir)$(PlatformShortName)\$(Configuration)\"
+copy "$(SolutionDir)OpenCV\bin\$(PlatformShortName)\opencv_world410d.dll" "$(SolutionDir)$(PlatformShortName)\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -233,11 +234,12 @@ copy $(SolutionDir)Baumer\bin\$(PlatformShortName)\MathParser.dll $(SolutionDir)
     </ResourceCompile>
     <PostBuildEvent />
     <PostBuildEvent>
-      <Command>copy $(SolutionDir)FreeImage\FreeImage.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
-copy $(SolutionDir)Alpao\lib\$(PlatformShortName)\ASDK.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
-copy $(SolutionDir)Baumer\bin\$(PlatformShortName)\bgapi2_genicam.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
-copy $(SolutionDir)Baumer\bin\$(PlatformShortName)\MathParser.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\
-copy $(SolutionDir)OpenCV\bin\$(PlatformShortName)\opencv_world410.dll $(SolutionDir)$(PlatformShortName)\$(Configuration)\</Command>
+      <Command>copy "$(SolutionDir)FreeImage\FreeImage.dll" "$(SolutionDir)$(PlatformShortName)\$(Configuration)\"
+copy "$(SolutionDir)FreeImage\vcomp100.dll" "$(SolutionDir)$(PlatformShortName)\$(Configuration)\"
+copy "$(SolutionDir)Alpao\lib\$(PlatformShortName)\ASDK.dll" "$(SolutionDir)$(PlatformShortName)\$(Configuration)\"
+copy "$(SolutionDir)Baumer\bin\$(PlatformShortName)\bgapi2_genicam.dll" "$(SolutionDir)$(PlatformShortName)\$(Configuration)\"
+copy "$(SolutionDir)Baumer\bin\$(PlatformShortName)\MathParser.dll" "$(SolutionDir)$(PlatformShortName)\$(Configuration)\"
+copy "$(SolutionDir)OpenCV\bin\$(PlatformShortName)\opencv_world410.dll" "$(SolutionDir)$(PlatformShortName)\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
