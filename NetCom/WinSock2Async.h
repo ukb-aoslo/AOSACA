@@ -43,8 +43,6 @@ public:
 	int		Send( char* pchBuff, int nLen, int nFlags = 0 );
 	BOOL	GetPeerName( LPTSTR sAddress, int* const pnPort );
 
-	//Oneliners
-	bool	IsConnected()		{ return m_bConnected; }
 
 //Static methods
 public:	

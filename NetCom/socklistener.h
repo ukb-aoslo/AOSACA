@@ -22,6 +22,10 @@ public:
 	CString* netbuff;
 	HANDLE* eID;
 	virtual int	Send(char* pchBuff, int nLen, int nFlags = 0);
+	bool isConnected() {
+		if (m_psockClient != NULL)
+			return true; else return false;
+	};
 	
 //Event handlers
 private:

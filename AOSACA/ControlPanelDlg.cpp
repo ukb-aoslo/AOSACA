@@ -1122,7 +1122,8 @@ void CControlPanelDlg::TransmitDefocus() {
 	char data[50];
 	sprintf(data, "AOSACA_DEFOCUS#%2.3f", m_FixedDefocusValue);
 
-	m_pListener_AO->Send(data, 50, 0);
+	if (m_pListener_AO->isConnected())
+		m_pListener_AO->Send(data, 50, 0);
 
 
 }
