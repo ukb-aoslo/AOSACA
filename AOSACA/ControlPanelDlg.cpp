@@ -172,8 +172,13 @@ BOOL CControlPanelDlg::OnInitDialog()
 	m_DefocusStepSize = 0.025;
 	m_FixedDefocusValue = 0.;	
 	m_MinCent = 0;
-	m_IntGain = 1.;
-	m_ModestoZero = 0;
+
+	m_IntGain = g_AOSACAParams->INT_GAIN;
+	g_optcalc->set_Gain(m_IntGain);
+
+	m_ModestoZero = g_AOSACAParams->MODES_TO_ZERO;
+	g_centroids->set_ModestoZero(m_ModestoZero);
+
 	m_PupilSize = g_AOSACAParams->PUPIL_FIT_SIZE_MICRONS/1000.;
 	m_fMinCentPercent = 1.;
 	m_SvBkgndExp = g_AOSACAParams->EXPOSURE_MS;
@@ -268,6 +273,8 @@ BOOL CControlPanelDlg::OnInitDialog()
 	m_eCentThreshold.SetValidation(MYEDIT_INTEGER, g_AOSACAParams->THRESHOLD, 1, 255, 3, -1, false);
 	m_eMinCent.SetValidation(MYEDIT_INTEGER, m_MinCent, 0, 0, 3, false) ;
 	m_eIntGain.SetValidation(MYEDIT_DOUBLE, m_IntGain, 0, 1, 1, 2, false);
+	text.Format(L"%3.2f", m_IntGain);
+	SetDlgItemText(IDE_CONTROL_CLOOPPARAMS_INTGGAIN, text);
 	m_eModestoZero.SetValidation(MYEDIT_INTEGER, m_ModestoZero, 0, 50, 2, 0, false);
 	m_ePupilSize.SetValidation(MYEDIT_DOUBLE, m_PupilSize, 4, 7.2, 1, 1, false);
 	m_ePreCorrection_Def.SetValidation(MYEDIT_DOUBLE, m_PreDefocusValue, -9, 9, 1, 2, true);
@@ -364,10 +371,12 @@ void CControlPanelDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar
 		case IDS_CONTROL_CLOOPPARAMS_INTGGAIN:
 			m_IntGain = m_eIntGain.UpdateValue(direction, 0.01);
 			g_optcalc->set_Gain(m_IntGain);
+			g_AOSACAParams->INT_GAIN = m_IntGain;
 			break;
 		case IDS_CONTROL_CLOOPPARAMS_ZEROMODES:
 			m_ModestoZero = (short)m_eModestoZero.UpdateValue(direction, 1.);
 			g_centroids->set_ModestoZero(m_ModestoZero);
+			g_AOSACAParams->MODES_TO_ZERO = m_ModestoZero;
 			break;
 		case IDS_CONTROL_CLOOPPARAMS_PUPILSIZE:
 			m_PupilSize = m_ePupilSize.UpdateValue(direction, 0.1);
@@ -977,6 +986,7 @@ BOOL CControlPanelDlg::PreTranslateMessage(MSG* pMsg)
 					GetDlgItemText(IDE_CONTROL_CLOOPPARAMS_INTGGAIN,text);
 					m_IntGain = _ttof(text);
 					g_optcalc->set_Gain(m_IntGain);
+					g_AOSACAParams->INT_GAIN = m_IntGain;
 				}
 				else if (pWnd == &m_eModestoZero)
 				{
@@ -984,6 +994,7 @@ BOOL CControlPanelDlg::PreTranslateMessage(MSG* pMsg)
 					GetDlgItemText(IDE_CONTROL_CLOOPPARAMS_ZEROMODES,text);
 					m_ModestoZero = _ttoi(text);
 					g_centroids->set_ModestoZero(m_ModestoZero);
+					g_AOSACAParams->MODES_TO_ZERO = m_ModestoZero;
 				}
 				else if (pWnd == &m_ePupilSize)
 				{

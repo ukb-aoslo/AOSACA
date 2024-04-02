@@ -91,6 +91,8 @@ public:
 	//AO Loop Parameters
 	short	DM_POKE_MAT_ITER;
 	short	CYCLES_BELOW_SETCENTROIDNO;
+	double	INT_GAIN;
+	short	MODES_TO_ZERO;
 
 	// Application runtime parameters
 	HANDLE		g_ehCamLive;			// event to trigger conitnuous frame capture
@@ -381,6 +383,12 @@ public:
 			DM_POKE_MAT_ITER = _tstoi(temp);
 			::GetPrivateProfileString(_T("LoopParams"), _T("CYCLES_BELOW_SETCENTROIDNO"), _T(""), temp, 40, g_stAppParamsFile);
 			CYCLES_BELOW_SETCENTROIDNO = _tstoi(temp);
+
+			::GetPrivateProfileString(_T("LoopParams"), _T("INT_GAIN"), _T(""), temp, 40, g_stAppParamsFile);
+			INT_GAIN = _tstof(temp);
+			::GetPrivateProfileString(_T("LoopParams"), _T("MODES_TO_ZERO"), _T(""), temp, 40, g_stAppParamsFile);
+			MODES_TO_ZERO = (short)_tstoi(temp);
+
 		}
 		else 
 		{
@@ -420,6 +428,8 @@ public:
 			// AO Loop Parameters
 			DM_POKE_MAT_ITER = 3;
 			CYCLES_BELOW_SETCENTROIDNO = 30;
+			INT_GAIN = 0.2;
+			MODES_TO_ZERO = 0;
 		}		
 	};
 
@@ -483,6 +493,11 @@ public:
 			::WritePrivateProfileString(_T("LoopParams"), _T("DM_POKE_MAT_ITER"), temp, g_stAppParamsFile);
 			temp.Format(L"%d", CYCLES_BELOW_SETCENTROIDNO);
 			::WritePrivateProfileString(_T("LoopParams"), _T("CYCLES_BELOW_SETCENTROIDNO"), temp, g_stAppParamsFile);
+
+			temp.Format(L"%3.2f", INT_GAIN);
+			::WritePrivateProfileString(_T("LoopParams"), _T("INT_GAIN"), temp, g_stAppParamsFile);
+			temp.Format(L"%d", MODES_TO_ZERO);
+			::WritePrivateProfileString(_T("LoopParams"), _T("MODES_TO_ZERO"), temp, g_stAppParamsFile);
 		}
 		else
 		{ 
